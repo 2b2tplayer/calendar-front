@@ -1,24 +1,52 @@
 import React, { useState, useEffect, useMemo } from "react";
-// import Calendar from "react-calendar"; // Comentado
-/* Comentado - Recharts 
 import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
+  Sector,
 } from "recharts";
-*/
-// import 'react-calendar/dist/Calendar.css'; // Comentado
+import {
+  LuUser,
+  LuCalendarDays,
+  LuClock,
+  LuCheckCircle,
+  LuXCircle,
+  LuBarChart2,
+  LuPieChart,
+  LuAlertCircle,
+  LuTrendingUp,
+  LuTrendingDown,
+  LuUserPlus,
+} from "react-icons/lu";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
-import { LuInfo, LuChevronDown } from "react-icons/lu";
-import { SiGooglemeet, SiZoom, SiDiscord } from "react-icons/si";
 
-// Colores para los gráficos
-const COLORS_STATS = ["#6A67F3", "#E2E8F0"]; // Activo, Inactivo/Restante
-const COLORS_CANCEL = ["#6A67F3", "#A0AEC0", "#F56565"]; // Realizadas, Reprogramadas, Canceladas
+// Helper function to get month name
+const getMonthName = (monthIndex) => {
+  const months = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ];
+  return months[monthIndex];
+};
 
 const Dashboard = ({ userData }) => {
   // Usar datos del usuario o valores por defecto
