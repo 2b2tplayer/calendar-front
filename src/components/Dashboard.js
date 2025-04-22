@@ -26,6 +26,7 @@ import {
   LuTrendingDown,
   LuUserPlus,
 } from "react-icons/lu";
+import { SiGooglemeet, SiZoom, SiDiscord } from "react-icons/si";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
 
