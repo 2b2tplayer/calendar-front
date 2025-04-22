@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
+/* import {
   BarChart,
   Bar,
   XAxis,
@@ -12,7 +12,7 @@ import {
   Pie,
   Cell,
   Sector,
-} from "recharts";
+} from "recharts"; */
 import { SiGooglemeet, SiZoom, SiDiscord } from "react-icons/si";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
