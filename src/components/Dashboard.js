@@ -13,19 +13,6 @@ import {
   Cell,
   Sector,
 } from "recharts";
-import {
-  LuUser,
-  LuCalendarDays,
-  LuClock,
-  LuCheckCircle,
-  LuXCircle,
-  LuBarChart2,
-  LuPieChart,
-  LuAlertCircle,
-  LuTrendingUp,
-  LuTrendingDown,
-  LuUserPlus,
-} from "react-icons/lu";
 import { SiGooglemeet, SiZoom, SiDiscord } from "react-icons/si";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
