@@ -3,7 +3,6 @@ import "./RegisterForm.css";
 import { LuChevronDown } from "react-icons/lu";
 import { FaReact } from "react-icons/fa"; // Icono Koafy
 import { register } from "../services/api"; // Importar función register
-import { useNavigate } from "react-router-dom";
 
 const RegisterForm = ({ nextStep, currentStep, totalSteps }) => {
   // Estado para los campos del formulario

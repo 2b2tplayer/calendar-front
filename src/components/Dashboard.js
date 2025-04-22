@@ -30,25 +30,6 @@ import { SiGooglemeet, SiZoom, SiDiscord } from "react-icons/si";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
 
-// Helper function to get month name
-const getMonthName = (monthIndex) => {
-  const months = [
-    "Ene",
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  return months[monthIndex];
-};
-
 const Dashboard = ({ userData }) => {
   // Usar datos del usuario o valores por defecto
   const userName = userData?.name || "Usuario";
