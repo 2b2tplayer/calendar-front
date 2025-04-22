@@ -1,0 +1,136 @@
+/* Estilos compartidos para los pasos del Onboarding (excepto el primero que usa RegisterForm.css) */
+
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  height: 100%;
+}
+
+/* Reutilizamos el indicador de progreso de RegisterForm.css */
+.progress-indicator {
+  display: flex;
+  /* margin-bottom se aplica inline donde sea necesario */
+}
+
+.progress-indicator .step {
+  width: 40px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  margin: 0 5px;
+}
+
+.progress-indicator .step.active {
+  background-color: #fff;
+}
+
+/* Reutilizamos el estilo de la tarjeta */
+.onboarding-card {
+  background-color: #ffffff;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 520px; /* Ligeramente más ancha quizás? Ajustar según contenido */
+  text-align: center; /* Centrar texto por defecto en las tarjetas */
+}
+
+.onboarding-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.onboarding-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+  max-width: 380px; /* Limitar ancho del párrafo */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Reutilizamos el botón de submit */
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #6a67f3;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  background-color: #5a57e3;
+}
+
+/* Estilos para enlaces opcionales debajo del botón */
+.optional-links {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Espacio entre enlaces */
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #666; /* Color de enlace sutil */
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.link-button:hover {
+  color: #333;
+}
+
+.link-button.danger {
+  color: #e53e3e; /* Color rojo para acciones peligrosas */
+}
+
+.link-button.danger:hover {
+  color: #c53030;
+}
+
+/* Estilos para el paso final */
+.final-step {
+  text-align: center;
+  color: #fff; /* Texto blanco en el paso final */
+}
+
+.final-step .register-header {
+  /* Aseguramos que el header del paso final también tenga color blanco */
+  color: #fff;
+}
+.final-step .logo-icon-large,
+.final-step .logo-text-large {
+  color: #fff;
+}
+
+.final-step h1 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Media queries para responsividad si son necesarios */
+@media (max-width: 768px) {
+  .onboarding-container {
+    padding: 20px;
+  }
+  .onboarding-card {
+    padding: 30px;
+    max-width: 100%;
+  }
+}

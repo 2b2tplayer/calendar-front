@@ -1,0 +1,188 @@
+.event-type-form-container {
+  padding: 30px 40px;
+  max-width: 700px; /* Limitar ancho del formulario */
+  margin: 20px auto; /* Centrar si se usa solo */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.event-type-form-container h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.form-section {
+  margin-bottom: 25px;
+}
+
+.form-section > label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 15px; /* Más espacio */
+  color: #444;
+}
+
+.form-section input[type="text"],
+.form-section input[type="number"],
+.form-section select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db; /* Borde gris claro */
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box; /* Incluir padding/border en el ancho */
+}
+
+.duration-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0 12px;
+  width: fit-content; /* Ajustar al contenido */
+}
+
+.duration-input svg {
+  color: #6b7280; /* Gris medio */
+}
+
+.duration-input input[type="number"] {
+  border: none;
+  padding: 10px 0;
+  width: 50px; /* Ancho fijo para duración */
+  text-align: center;
+  font-size: 14px;
+}
+/* Ocultar flechas en input number */
+.duration-input input[type="number"]::-webkit-inner-spin-button,
+.duration-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.duration-input input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.duration-input span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #e5e7eb; /* Gris más claro */
+  margin: 30px 0;
+}
+
+.advice-box {
+  background-color: #eff6ff; /* Azul muy claro */
+  border: 1px solid #bfdbfe; /* Borde azul claro */
+  color: #374151; /* Texto gris oscuro */
+  padding: 12px 15px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.advice-box svg {
+  color: #60a5fa; /* Azul medio */
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.sub-section {
+  margin-top: 10px;
+  padding-left: 10px; /* Indentación leve */
+  border-left: 2px solid #e5e7eb; /* Línea lateral */
+}
+
+.sub-section > label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sub-section .description {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.availability-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.availability-inputs div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.availability-inputs input[type="number"] {
+  width: 60px; /* Ancho para días/horas */
+  padding: 5px 8px;
+  text-align: center;
+}
+
+.error-message {
+  color: #ef4444; /* Rojo */
+  font-size: 14px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-button {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+.cancel-button:hover {
+  background-color: #d1d5db;
+}
+
+.submit-button {
+  background-color: #6a67f3; /* Mismo color que otros botones principales */
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #5a57e3;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -1,0 +1,156 @@
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centrar verticalmente si no hay más contenido */
+  padding: 40px; /* Añadir padding general */
+  height: 100%; /* Para que el justify-content funcione */
+}
+
+.register-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logo-icon-large {
+  font-size: 40px;
+  color: #fff; /* Icono blanco sobre el degradado */
+  margin-right: 15px;
+}
+
+.logo-text-large {
+  font-size: 30px;
+  font-weight: bold;
+  color: #fff; /* Texto blanco */
+}
+
+.progress-indicator {
+  display: flex;
+  margin-bottom: 40px;
+}
+
+.progress-indicator .step {
+  width: 40px; /* Ancho de cada paso */
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.3); /* Color inactivo */
+  border-radius: 3px;
+  margin: 0 5px;
+}
+
+.progress-indicator .step.active {
+  background-color: #fff; /* Color activo */
+}
+
+.register-form-card {
+  background-color: #ffffff;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px; /* Ancho máximo del formulario */
+}
+
+.register-form-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.register-form-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 0; /* Padding solo vertical */
+  font-size: 15px;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: transparent;
+  color: #333;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-bottom-color: #6a67f3; /* Color de foco */
+}
+
+.form-group input[readOnly] {
+  color: #333; /* Mantener color oscuro para texto pre-llenado */
+  border-bottom-style: dashed; /* Opcional: indicar que no es editable */
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.form-group select {
+  appearance: none; /* Quitar estilo nativo */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px; /* Espacio para la flecha */
+  cursor: pointer;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none; /* Para que no interfiera con el click del select */
+}
+
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #6a67f3; /* Color del botón */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Espacio sobre el botón */
+}
+
+.submit-button:hover {
+  background-color: #5a57e3; /* Color hover */
+}
+
+/* Ajustes responsivos si son necesarios */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 20px;
+  }
+
+  .register-form-card {
+    padding: 30px;
+  }
+
+  .logo-icon-large {
+    font-size: 30px;
+  }
+
+  .logo-text-large {
+    font-size: 24px;
+  }
+}

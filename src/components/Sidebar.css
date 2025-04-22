@@ -1,0 +1,143 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif; /* O la fuente específica del diseño si la conoces */
+}
+
+.sidebar {
+  width: 260px; /* Ajusta según el diseño */
+  height: 100vh;
+  background-color: #ffffff; /* Fondo blanco según Figma */
+  padding: 25px 20px; /* Ajusta padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Para empujar la sección inferior hacia abajo */
+  border-right: 1px solid #e0e0e0; /* Borde derecho sutil */
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px; /* Espacio debajo del logo */
+}
+
+.logo-icon {
+  font-size: 28px; /* Tamaño del icono de logo */
+  color: #6a67f3; /* Color del icono de logo (ajustar) */
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-size: 20px; /* Tamaño del texto del logo */
+  font-weight: bold;
+  color: #333;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+}
+
+.sidebar-nav li {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px; /* Bordes redondeados */
+  cursor: pointer;
+  color: #555;
+  font-size: 15px;
+}
+
+.sidebar-nav li svg {
+  margin-right: 15px; /* Espacio entre icono y texto */
+  font-size: 18px; /* Tamaño de iconos de menú */
+  color: #888; /* Color de iconos de menú */
+}
+
+.sidebar-nav li:hover {
+  background-color: #f0f0f5;
+}
+
+.sidebar-nav li.active {
+  background-color: #e8e7fd; /* Fondo activo */
+  color: #6a67f3; /* Color de texto activo */
+  font-weight: 500;
+}
+
+.sidebar-nav li.active svg {
+  color: #6a67f3; /* Color de icono activo */
+}
+
+.sidebar-bottom {
+  /* No necesita estilos específicos si justify-content: space-between funciona */
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-top: 20px; /* Espacio sobre el perfil */
+  padding-top: 20px; /* Espacio interno superior */
+  border-top: 1px solid #e0e0e0; /* Línea divisoria */
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Para que empuje el icono de flecha */
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #888;
+}
+
+.user-menu-icon {
+  color: #888;
+  cursor: pointer;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none; /* Quitar borde derecho */
+    border-bottom: 1px solid #e0e0e0; /* Cambiar a borde inferior */
+    flex-direction: row; /* Cambiar a fila */
+    justify-content: space-between; /* Espaciar elementos */
+    align-items: center;
+    padding: 10px 15px;
+  }
+
+  .sidebar-header {
+    margin-bottom: 0;
+  }
+
+  .sidebar-nav {
+    display: none; /* Ocultar navegación principal en móvil (se puede hacer un menú hamburguesa) */
+  }
+
+  .sidebar-bottom {
+    /* Ajustar según cómo se maneje la info de usuario en móvil */
+    display: none; /* Ocultar por simplicidad inicial */
+  }
+}

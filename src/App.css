@@ -1,0 +1,54 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif; /* O la fuente específica del diseño */
+  background-color: #f8f9fa; /* Fondo base para toda la página */
+}
+
+.app {
+  display: flex;
+  min-height: 100vh; /* Asegura que ocupe toda la altura */
+}
+
+.main-content {
+  flex-grow: 1;
+  transition: background-color 0.3s ease; /* Transición suave del fondo */
+}
+
+/* Fondo para la vista de Onboarding (pasos 1-5 y pantalla final) */
+.main-content.onboarding-view {
+  background: linear-gradient(
+    to bottom right,
+    #a6c1ee,
+    /* Azul claro */ #c9a7f0 /* Púrpura claro */
+  );
+}
+
+/* Fondo para la vista del Dashboard (después de completar onboarding) */
+.main-content.dashboard-view {
+  background-color: #f8f9fa; /* Fondo gris muy claro */
+}
+
+/* Clase para cuando el main-content ocupa todo el ancho (pantalla final onboarding) */
+.main-content.full-width {
+  width: 100%;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+}
+
+/* Eliminamos los estilos por defecto de create-react-app que ya no necesitamos */
+/* .App {...} */
+/* .App-logo {...} */
+/* .App-header {...} */
+/* .App-link {...} */
+/* @keyframes App-logo-spin {...} */
