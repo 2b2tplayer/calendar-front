@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // --- Configuración Base ---
-const API_BASE_URL = "https://alets.com.ar/api2/api/"; // Revertir a la versión anterior
+const API_BASE_URL = "https://alets.com.ar/api2"; // Revertir a la versión anterior
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
