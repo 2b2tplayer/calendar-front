@@ -10,6 +10,7 @@ import ProfileSetup from "./components/ProfileSetup";
 import OnboardingComplete from "./components/OnboardingComplete";
 import Dashboard from "./components/Dashboard"; // Importar Dashboard
 import EventTypeForm from "./components/EventTypeForm"; // Importar nuevo formulario
+import AvailabilitySettings from "./components/AvailabilitySettings"; // Importar nuevo componente
 import { getCurrentUser, getToken, setToken } from "./services/api"; // Importar función API y manejo de token
 
 const TOTAL_ONBOARDING_STEPS = 5; // Pasos reales antes de la pantalla final
@@ -21,7 +22,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial
   const [error, setError] = useState(null); // Estado para errores
   // Nuevo estado para gestionar la vista principal
-  const [currentView, setCurrentView] = useState("dashboard"); // 'dashboard', 'createEventType', etc.
+  const [currentView, setCurrentView] = useState("dashboard"); // 'dashboard', 'createEventType', 'availability', etc.
 
   // Efecto para verificar token y cargar datos del usuario al inicio
   useEffect(() => {
@@ -89,6 +90,11 @@ function App() {
 
   const showCreateEventTypeForm = () => {
     setCurrentView("createEventType");
+  };
+
+  const showAvailabilitySettings = () => {
+    // Nueva función
+    setCurrentView("availability");
   };
 
   const handleEventTypeCreated = (newEvent) => {
@@ -182,6 +188,9 @@ function App() {
           />
         );
         break;
+      case "availability":
+        mainContent = <AvailabilitySettings />;
+        break;
       case "dashboard":
       default:
         mainContent = <Dashboard userData={userData} />;
@@ -191,21 +200,21 @@ function App() {
 
   return (
     <div className="app">
-      {/* Mostrar Sidebar solo si el onboarding está completo o si está en pasos > 1 */}
-      {(isOnboardingComplete ||
-        (!isOnboardingComplete && currentOnboardingStep > 1)) && (
+      {/* Mostrar Sidebar solo si el onboarding está completo */}
+      {isOnboardingComplete && (
         <Sidebar
           userData={userData}
-          // Pasar la función para que el botón la llame
-          onCreateEventClick={showCreateEventTypeForm}
+          currentView={currentView} // Pasar vista actual para active state
+          showDashboard={showDashboard}
+          showAvailabilitySettings={showAvailabilitySettings}
+          showCreateEventTypeForm={showCreateEventTypeForm}
+          // Aquí podríamos pasar más funciones para otros links
         />
       )}
       <div
         className={`main-content ${
           isOnboardingComplete ? "dashboard-view" : "onboarding-view"
         }`}
-        // La clase full-width la quitamos o ajustamos, ya que el sidebar se muestra ahora
-        // Si quisiéramos ocultar sidebar en createEventType, añadiríamos lógica aquí
       >
         {mainContent}
       </div>

@@ -134,3 +134,181 @@
     max-width: 100%;
   }
 }
+
+/* Add styles below the shared onboarding styles */
+
+/* --- Styles for Connect Calendar Step --- */
+
+.connect-calendar-card {
+  text-align: left; /* Override center alignment */
+}
+
+.connect-calendar-card h3 {
+  /* Optional: Adjust title if needed */
+  text-align: center; /* Center title specifically */
+  margin-bottom: 25px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.calendar-info h4 {
+  margin: 0 0 3px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.calendar-info span {
+  font-size: 14px;
+  color: #666;
+}
+
+.calendar-info span.connected-email {
+  color: #34d399; /* Green for connected */
+  font-weight: 500;
+}
+
+.calendar-info span.not-connected {
+  color: #f87171; /* Reddish for not connected */
+}
+
+.calendar-list {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.calendar-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Basic Switch Styles (Match Figma visually) */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px; /* Adjust width */
+  height: 22px; /* Adjust height */
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; /* Adjust knob size */
+  width: 16px; /* Adjust knob size */
+  left: 3px; /* Adjust knob position */
+  bottom: 3px; /* Adjust knob position */
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #6a67f3; /* Primary color when checked */
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #6a67f3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px); /* Adjust slide distance */
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.create-events-section {
+  margin-bottom: 25px;
+}
+
+.create-events-section label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.create-events-section select {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #555;
+  background-color: #f9f9f9;
+  appearance: none; /* Remove default arrow */
+  cursor: pointer;
+}
+
+.select-wrapper .select-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none; /* Allow clicking through to the select */
+}
+
+.info-text {
+  font-size: 12px !important; /* Override general p style */
+  color: #888 !important;
+  margin-top: 10px !important;
+  margin-bottom: 0 !important; /* Reset margin */
+  text-align: left !important;
+  max-width: none !important;
+}
+
+.connect-calendar-links {
+  margin-top: 20px; /* Adjust spacing for these links */
+}
+
+.error-message {
+  color: #e53e3e;
+  background-color: #fff5f5;
+  border: 1px solid #fc8181;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  text-align: left;
+}
+
+/* --- End Styles for Connect Calendar --- */

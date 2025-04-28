@@ -359,6 +359,46 @@ export const cancelBooking = async (id, cancelData) => {
   }
 };
 
+// --- Google Calendar ---
+
+// Initiate Google Calendar connection
+export const initiateGoogleAuth = async () => {
+  try {
+    // This endpoint likely returns a URL to redirect the user to Google's auth screen
+    const response = await apiClient.get("/auth/google/calendar");
+    // The actual redirection should happen in the component based on this response
+    return handleResponse(response); // Expecting { url: "..." } or similar
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// Check Google Calendar connection status
+export const getGoogleCalendarStatus = async () => {
+  try {
+    const response = await apiClient.get("/auth/google/calendar/status");
+    return handleResponse(response); // Expecting { isConnected: true/false, email: "..." }
+  } catch (error) {
+    // A 404 might mean not connected, handle gracefully if needed
+    if (error.response?.status === 404) {
+      return { isConnected: false };
+    }
+    handleError(error);
+    // Return a default state in case of other errors
+    return { isConnected: false, error: error.message };
+  }
+};
+
+// Optional: Function to disconnect Google Calendar
+export const disconnectGoogleCalendar = async () => {
+  try {
+    const response = await apiClient.delete("/auth/google/calendar");
+    return handleResponse(response); // Expecting a success message
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 // --- Salud API ---
 export const checkApiHealth = async () => {
   try {

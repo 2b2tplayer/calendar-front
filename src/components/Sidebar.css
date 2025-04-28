@@ -1,3 +1,5 @@
+/* Sidebar.css - Styles updated to match Figma design */
+
 /* Reset básico */
 * {
   box-sizing: border-box;
@@ -6,36 +8,30 @@
 }
 
 body {
-  font-family: sans-serif; /* O la fuente específica del diseño si la conoces */
+  font-family: sans-serif; /* Consider using the specific font from Figma */
 }
 
 .sidebar {
-  width: 260px; /* Ajusta según el diseño */
+  width: 250px;
   height: 100vh;
-  background-color: #ffffff; /* Fondo blanco según Figma */
-  padding: 25px 20px; /* Ajusta padding */
+  background-color: #ffffff; /* White background */
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Para empujar la sección inferior hacia abajo */
-  border-right: 1px solid #e0e0e0; /* Borde derecho sutil */
+  /* justify-content: space-between; Removed to allow grouping */
+  border-right: 1px solid #e0e0e0; /* Add back subtle border */
+  color: #333; /* Default dark text color */
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
-  margin-bottom: 40px; /* Espacio debajo del logo */
+  margin-bottom: 40px; /* Adjust spacing */
+  padding-left: 10px;
 }
 
-.logo-icon {
-  font-size: 28px; /* Tamaño del icono de logo */
-  color: #6a67f3; /* Color del icono de logo (ajustar) */
-  margin-right: 10px;
-}
-
-.logo-text {
-  font-size: 20px; /* Tamaño del texto del logo */
-  font-weight: bold;
-  color: #333;
+.sidebar-nav {
+  /* Allow the two nav sections to be distinct */
 }
 
 .sidebar-nav ul {
@@ -46,67 +42,77 @@ body {
   display: flex;
   align-items: center;
   padding: 12px 15px;
-  margin-bottom: 8px;
-  border-radius: 8px; /* Bordes redondeados */
+  margin-bottom: 10px; /* Adjust spacing */
+  border-radius: 8px;
   cursor: pointer;
-  color: #555;
+  color: #555; /* Default link color */
   font-size: 15px;
+  font-weight: 400;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-nav li svg {
-  margin-right: 15px; /* Espacio entre icono y texto */
-  font-size: 18px; /* Tamaño de iconos de menú */
-  color: #888; /* Color de iconos de menú */
+  margin-right: 15px;
+  font-size: 20px;
+  color: #777; /* Default icon color */
+  transition: color 0.2s ease;
 }
 
 .sidebar-nav li:hover {
-  background-color: #f0f0f5;
+  background-color: #f0f0f5; /* Light hover background */
+  color: #333; /* Darker text on hover */
+}
+
+.sidebar-nav li:hover svg {
+  color: #333; /* Darker icon on hover */
 }
 
 .sidebar-nav li.active {
-  background-color: #e8e7fd; /* Fondo activo */
-  color: #6a67f3; /* Color de texto activo */
+  background-color: #e8e7fd; /* Light purple background for active */
+  color: #5e7ef7; /* Primary color for active text */
   font-weight: 500;
 }
 
 .sidebar-nav li.active svg {
-  color: #6a67f3; /* Color de icono activo */
+  color: #5e7ef7; /* Primary color for active icon */
 }
 
 .sidebar-bottom {
-  /* No necesita estilos específicos si justify-content: space-between funciona */
+  margin-top: auto; /* Push this section to the bottom */
+  padding-top: 20px; /* Add some space above the bottom section */
+  border-top: 1px solid #e0e0e0; /* Separator line */
 }
 
 .user-profile {
   display: flex;
   align-items: center;
-  margin-top: 20px; /* Espacio sobre el perfil */
-  padding-top: 20px; /* Espacio interno superior */
-  border-top: 1px solid #e0e0e0; /* Línea divisoria */
+  margin-top: 20px; /* Space above profile within bottom section */
+  /* Removed top border as it's now on sidebar-bottom */
 }
 
 .user-avatar {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 12px;
+  object-fit: cover;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Para que empuje el icono de flecha */
+  flex-grow: 1;
 }
 
 .user-name {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: #333; /* Dark name */
 }
 
 .user-email {
   font-size: 12px;
-  color: #888;
+  color: #888; /* Grey email color */
 }
 
 .user-menu-icon {
@@ -114,30 +120,9 @@ body {
   cursor: pointer;
 }
 
-/* Estilos responsivos */
+/* Remove responsive styles for now if not needed */
+/*
 @media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    border-right: none; /* Quitar borde derecho */
-    border-bottom: 1px solid #e0e0e0; /* Cambiar a borde inferior */
-    flex-direction: row; /* Cambiar a fila */
-    justify-content: space-between; /* Espaciar elementos */
-    align-items: center;
-    padding: 10px 15px;
-  }
-
-  .sidebar-header {
-    margin-bottom: 0;
-  }
-
-  .sidebar-nav {
-    display: none; /* Ocultar navegación principal en móvil (se puede hacer un menú hamburguesa) */
-  }
-
-  .sidebar-bottom {
-    /* Ajustar según cómo se maneje la info de usuario en móvil */
-    display: none; /* Ocultar por simplicidad inicial */
-  }
+  ...
 }
+*/

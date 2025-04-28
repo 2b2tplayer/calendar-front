@@ -1,10 +1,32 @@
 import React from "react";
 import "./OnboardingSteps.css";
+import { SiGooglemeet, SiZoom, SiDiscord, SiJitsi } from "react-icons/si";
+import { logout } from "../services/api";
 
 const ConnectApps = ({ nextStep, prevStep, currentStep, totalSteps }) => {
+  const apps = [
+    { id: "meet", name: "Google Meet", icon: SiGooglemeet, connected: false },
+    { id: "zoom", name: "Zoom video", icon: SiZoom, connected: false },
+    { id: "discord", name: "Discord", icon: SiDiscord, connected: false },
+    { id: "jitsi", name: "Jitsi video", icon: SiJitsi, connected: false },
+  ];
+
   const handleContinue = (e) => {
     e.preventDefault();
     nextStep();
+  };
+
+  const handleSkip = () => {
+    nextStep();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.reload();
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   return (
@@ -17,24 +39,47 @@ const ConnectApps = ({ nextStep, prevStep, currentStep, totalSteps }) => {
           ></div>
         ))}
       </div>
-      <div className="onboarding-card">
+      <div className="onboarding-card connect-apps-card">
         <h3>Conecte sus aplicaciones favoritas</h3>
-        <p>Conecte sus aplicaciones de video para usarlas en sus eventos</p>
-        {/* ... Lista de aplicaciones para conectar ... */}
-        <p style={{ textAlign: "center", margin: "20px 0" }}>
-          [UI Lista de Apps]
+        <p className="subtitle">
+          Conecte sus aplicaciones de video para usarlas en sus eventos
         </p>
 
-        <form onSubmit={handleContinue}>
-          <button type="submit" className="submit-button">
-            Continuar &gt;
-          </button>
-        </form>
+        <div className="apps-list">
+          {apps.map((app) => {
+            const IconComponent = app.icon;
+            return (
+              <div key={app.id} className="app-item">
+                <div className="app-info">
+                  <IconComponent className={`app-icon ${app.id}`} />
+                  <span>{app.name}</span>
+                </div>
+                <button
+                  className={`connect-button ${
+                    app.connected ? "connected" : ""
+                  }`}
+                  disabled
+                >
+                  {app.connected ? "Conectado" : "Conectar"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <button onClick={handleContinue} className="submit-button">
+          Continuar &gt;
+        </button>
+
         <div className="optional-links">
-          <button type="button" className="link-button">
+          <button onClick={handleSkip} type="button" className="link-button">
             Configurar más tarde
           </button>
-          <button type="button" className="link-button danger">
+          <button
+            onClick={handleLogout}
+            type="button"
+            className="link-button danger"
+          >
             Cerrar sesión
           </button>
         </div>

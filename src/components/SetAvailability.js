@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./OnboardingSteps.css";
 import { getAvailability, updateAvailability } from "../services/api"; // Importar funciones API
+import { LuPencil } from "react-icons/lu"; // Importar icono de lápiz
 
 // Estructura inicial para la disponibilidad por defecto
 const defaultSchedule = {
@@ -12,6 +13,28 @@ const defaultSchedule = {
   saturday: { start: "09:00", end: "13:00", isWorking: false },
   sunday: { start: "09:00", end: "13:00", isWorking: false },
 };
+
+// Mapeo de nombres de día a letras
+const dayMap = {
+  sunday: "D", // Asumiendo que D es Domingo
+  monday: "L",
+  tuesday: "M",
+  wednesday: "M",
+  thursday: "J",
+  friday: "V",
+  saturday: "S",
+};
+
+// Orden deseado de los días
+const dayOrder = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
 
 const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
   const [schedule, setSchedule] = useState(defaultSchedule);
@@ -27,16 +50,23 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
       try {
         const currentAvailability = await getAvailability();
         if (currentAvailability && currentAvailability.schedule) {
-          // Combinar horario existente con el por defecto por si faltan días
-          setSchedule({ ...defaultSchedule, ...currentAvailability.schedule });
+          // Completar con default si faltan días en la respuesta
+          const completeSchedule = dayOrder.reduce((acc, day) => {
+            acc[day] =
+              currentAvailability.schedule[day] || defaultSchedule[day];
+            return acc;
+          }, {});
+          setSchedule(completeSchedule);
+        } else {
+          // Si devuelve null (404) o no tiene .schedule, usar default
+          setSchedule(defaultSchedule);
         }
-        // Si devuelve null (404), se usará el defaultSchedule
       } catch (err) {
         console.error("Error loading availability:", err);
         setError(
           "No se pudo cargar la disponibilidad. Usando horario por defecto."
         );
-        // Mantenemos el horario por defecto en caso de error
+        setSchedule(defaultSchedule); // Asegurar que se use el default en error
       } finally {
         setIsLoading(false);
       }
@@ -44,25 +74,14 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
     loadAvailability();
   }, []);
 
-  const handleScheduleChange = (day, field, value) => {
-    // Lógica para actualizar el estado 'schedule'
-    // Esta función se llamaría desde los inputs/checkboxes de la UI real
-    setSchedule((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [field]: field === "isWorking" ? !prev[day].isWorking : value,
-      },
-    }));
-  };
-
   const handleContinue = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
     try {
+      // Guardar el horario actual (el que se cargó o el default)
       await updateAvailability({ schedule });
-      nextStep(); // Ir al siguiente paso si la actualización es exitosa
+      nextStep();
     } catch (err) {
       console.error("Error updating availability:", err);
       setError("Error al guardar la disponibilidad. Inténtalo de nuevo.");
@@ -81,85 +100,66 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
           ></div>
         ))}
       </div>
-      <div className="onboarding-card">
-        <h3>Establecer Disponibilidad</h3>
-        <p>Define los rangos de tiempo en los que estas disponible</p>
+      <div className="onboarding-card availability-card">
+        <h4>Disponibilidad</h4>
+
+        <h5>Intervalos de fechas</h5>
+        <p className="availability-description">
+          Los invitados pueden programar eventos en el futuro, en 60 dias, y con
+          una antelación mínima de 4 horas para notificarlos.
+        </p>
 
         {isLoading ? (
           <div>Cargando disponibilidad...</div>
         ) : (
-          <form onSubmit={handleContinue}>
-            {/* --- UI Real para editar disponibilidad --- */}
-            {/* Aquí iría el mapeo de los días y sus inputs */}
-            {/* Ejemplo muy básico: */}
-            <div
-              style={{
-                textAlign: "left",
-                maxHeight: "300px",
-                overflowY: "auto",
-                marginBottom: "20px",
-              }}
-            >
-              {Object.entries(schedule).map(([day, details]) => (
-                <div
-                  key={day}
-                  style={{
-                    marginBottom: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={details.isWorking}
-                    onChange={() => handleScheduleChange(day, "isWorking")}
-                    id={`working-${day}`}
-                  />
-                  <label
-                    htmlFor={`working-${day}`}
-                    style={{ width: "80px", textTransform: "capitalize" }}
-                  >
-                    {day}
-                  </label>
-                  <input
-                    type="time"
-                    value={details.start}
-                    disabled={!details.isWorking}
-                    onChange={(e) =>
-                      handleScheduleChange(day, "start", e.target.value)
-                    }
-                  />
-                  <span>-</span>
-                  <input
-                    type="time"
-                    value={details.end}
-                    disabled={!details.isWorking}
-                    onChange={(e) =>
-                      handleScheduleChange(day, "end", e.target.value)
-                    }
-                  />
-                </div>
-              ))}
+          <div className="weekly-hours-section">
+            <div className="default-schedule-notice">
+              <span>
+                Este tipo de eventos utiliza su{" "}
+                <strong>horario por defecto</strong>
+              </span>
+              <button className="edit-button">
+                <LuPencil />
+              </button>
             </div>
-            {/* --- Fin UI Real --- */}
 
-            {error && (
-              <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>
-            )}
-
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Guardando..." : "Continuar >"}
-            </button>
-          </form>
+            <h6>
+              <span role="img" aria-label="refresh">
+                🔄
+              </span>{" "}
+              Horas semanales
+            </h6>
+            <ul className="availability-list">
+              {dayOrder.map((day) => {
+                const details = schedule[day] || defaultSchedule[day]; // Fallback por si acaso
+                return (
+                  <li key={day} className="availability-item">
+                    <span className="day-letter">{dayMap[day]}</span>
+                    <span className="day-schedule">
+                      {details.isWorking
+                        ? `${details.start} - ${details.end}`
+                        : "No disponible"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         )}
 
+        {error && <p style={{ color: "red", marginTop: "15px" }}>{error}</p>}
+
+        <button
+          type="button"
+          onClick={handleContinue}
+          className="submit-button"
+          disabled={isSubmitting || isLoading}
+          style={{ marginTop: "20px" }}
+        >
+          {isSubmitting ? "Guardando..." : "Continuar >"}
+        </button>
+
         <div className="optional-links">
-          {/* Botón para ir atrás (opcional pero útil) */}
           <button type="button" onClick={prevStep} className="link-button">
             Atrás
           </button>
