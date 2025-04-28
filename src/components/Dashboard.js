@@ -13,7 +13,6 @@ import {
   LuChevronLeft,
   LuChevronRight,
 } from "react-icons/lu";
-import { TbBrandJitsi } from "react-icons/tb";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
 import EventTypeList from "./EventTypeList";
