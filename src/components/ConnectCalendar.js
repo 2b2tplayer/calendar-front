@@ -12,56 +12,66 @@ const ConnectCalendar = ({ nextStep, prevStep, currentStep, totalSteps }) => {
   const [status, setStatus] = useState({ isConnected: false, email: null });
   const [isLoadingStatus, setIsLoadingStatus] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isRetryingFetch, setIsRetryingFetch] = useState(false);
+  const [authUrl, setAuthUrl] = useState(null); // State to store authUrl
   const [error, setError] = useState(null);
 
-  // Check connection status on mount
-  useEffect(() => {
-    const checkStatus = async () => {
-      setIsLoadingStatus(true);
-      try {
-        const result = await getGoogleCalendarStatus();
-        setStatus(result || { isConnected: false });
-      } catch (err) {
-        setError("Error al verificar el estado de Google Calendar.");
-        setStatus({ isConnected: false });
-      } finally {
-        setIsLoadingStatus(false);
-      }
-    };
-    checkStatus();
-  }, []);
-
-  const handleConnect = async () => {
-    setIsConnecting(true);
+  // Function to fetch auth URL (can be called on mount or on button click)
+  const fetchAuthUrl = async () => {
     setError(null);
     try {
       const response = await initiateGoogleAuth();
-      if (response && response.url) {
-        // Redirect the user to Google's authorization screen
-        window.location.href = response.url;
-        // The backend will handle the callback and token storage
-        // We might not reach the nextStep() here directly
+      // Correct the path: Check directly for response.authUrl
+      if (response?.authUrl) {
+        setAuthUrl(response.authUrl);
       } else {
-        throw new Error("No se recibió la URL de autorización.");
+        // Only set error if we tried to fetch and failed
+        setError("No se pudo obtener la URL de autorización del servidor.");
+        console.error("Auth URL not found in response:", response);
       }
     } catch (err) {
       console.error("Error initiating Google Auth:", err);
       setError(
         err.message || "Error al iniciar la conexión con Google Calendar."
       );
-      setIsConnecting(false);
     }
-    // Note: nextStep() might be called on the callback page or after status check confirms connection
   };
 
-  const handleContinue = (e) => {
+  // Check connection status on mount and fetch Auth URL if not connected
+  useEffect(() => {
+    const checkStatusAndFetchUrl = async () => {
+      setIsLoadingStatus(true);
+      setError(null);
+      try {
+        const result = await getGoogleCalendarStatus();
+        setStatus(result || { isConnected: false });
+        if (!result?.isConnected) {
+          await fetchAuthUrl(); // Fetch URL if not connected
+        }
+      } catch (err) {
+        setError("Error al verificar el estado de Google Calendar.");
+        setStatus({ isConnected: false });
+        await fetchAuthUrl(); // Attempt to fetch URL even if status check failed initially
+      } finally {
+        setIsLoadingStatus(false);
+      }
+    };
+    checkStatusAndFetchUrl();
+  }, []);
+
+  const handleContinueOrConnect = async (e) => {
     e.preventDefault();
-    // If already connected, just proceed
     if (status.isConnected) {
-      nextStep();
+      nextStep(); // Continue if connected
+    } else if (authUrl) {
+      setIsConnecting(true);
+      window.location.href = authUrl; // Redirect to Google Auth
     } else {
-      // Otherwise, initiate connection
-      handleConnect();
+      // Try fetching the URL again if it wasn't loaded initially
+      setIsRetryingFetch(true);
+      setError(null);
+      await fetchAuthUrl();
+      setIsRetryingFetch(false);
     }
   };
 
@@ -81,15 +91,14 @@ const ConnectCalendar = ({ nextStep, prevStep, currentStep, totalSteps }) => {
     }
   };
 
-  // Placeholder data for calendar list and dropdown
+  // Placeholder data - keep simple or remove until connection
   const calendars = [
     { id: "1", name: status.email || "primary@gmail.com" },
-    { id: "2", name: "Negocio EE.UU" },
-    { id: "3", name: "KoaFY" },
-    { id: "4", name: "Algo Trading" },
-    { id: "5", name: "Isaac - Ape Funded" },
+    // Removed other hardcoded calendars
   ];
-  const [selectedCalendar, setSelectedCalendar] = useState(calendars[0].id);
+  const [selectedCalendar, setSelectedCalendar] = useState(
+    calendars[0]?.id || null
+  );
 
   return (
     <div className="onboarding-container">
@@ -118,53 +127,64 @@ const ConnectCalendar = ({ nextStep, prevStep, currentStep, totalSteps }) => {
           </div>
         </div>
 
-        {/* Placeholder list of calendars - requires API integration post-connection */}
-        <div className="calendar-list">
-          {calendars.map((cal) => (
-            <div key={cal.id} className="calendar-item">
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  defaultChecked={cal.id === calendars[0].id}
-                />
-                <span className="slider round"></span>
-              </label>
-              <span>{cal.name}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="create-events-section">
-          <label htmlFor="create-calendar-select">Crear eventos en</label>
-          <div className="select-wrapper">
-            <select
-              id="create-calendar-select"
-              value={selectedCalendar}
-              onChange={(e) => setSelectedCalendar(e.target.value)}
-              disabled={!status.isConnected} // Disable if not connected
-            >
+        {/* Hide hardcoded list and dropdown if not connected */}
+        {status.isConnected && (
+          <>
+            {/* Placeholder list - Replace with fetched data later */}
+            <div className="calendar-list">
               {calendars.map((cal) => (
-                <option key={cal.id} value={cal.id}>
-                  {cal.name} ({cal.id === calendars[0].id ? "Google" : "Otro"})
-                </option>
+                <div key={cal.id} className="calendar-item">
+                  <label className="switch">
+                    <input type="checkbox" defaultChecked={true} />
+                    <span className="slider round"></span>
+                  </label>
+                  <span>{cal.name}</span>
+                </div>
               ))}
-            </select>
-            <LuChevronDown className="select-arrow" />
-          </div>
-          <p className="info-text">
-            Puedo anular esto por evento en la configuración avanzada de cada
-            tipo de evento.
-          </p>
-        </div>
+            </div>
 
-        {error && <p className="error-message">{error}</p>}
+            <div className="create-events-section">
+              <label htmlFor="create-calendar-select">Crear eventos en</label>
+              <div className="select-wrapper">
+                <select
+                  id="create-calendar-select"
+                  value={selectedCalendar}
+                  onChange={(e) => setSelectedCalendar(e.target.value)}
+                  disabled={!status.isConnected}
+                >
+                  {calendars.map((cal) => (
+                    <option key={cal.id} value={cal.id}>
+                      {cal.name}
+                    </option>
+                  ))}
+                </select>
+                <LuChevronDown className="select-arrow" />
+              </div>
+              <p className="info-text">
+                Puedo anular esto por evento en la configuración avanzada de
+                cada tipo de evento.
+              </p>
+            </div>
+          </>
+        )}
+
+        {/* Only show specific connection error if authUrl couldn't be fetched */}
+        {!status.isConnected && error && (
+          <p className="error-message">{error}</p>
+        )}
 
         <button
-          onClick={handleContinue}
+          onClick={handleContinueOrConnect}
           className="submit-button"
-          disabled={isConnecting || isLoadingStatus}
+          disabled={isLoadingStatus || isRetryingFetch || isConnecting}
         >
-          {isConnecting ? "Conectando..." : "Continuar >"}
+          {isLoadingStatus || isRetryingFetch
+            ? "Cargando..."
+            : status.isConnected
+            ? "Continuar >"
+            : isConnecting
+            ? "Redirigiendo..."
+            : "Conectar Google Calendar"}
         </button>
 
         <div className="optional-links connect-calendar-links">
