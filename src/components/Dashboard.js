@@ -3,7 +3,7 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { SiGooglemeet, SiDiscord } from "react-icons/si";
+// import { SiGooglemeet, SiDiscord } from "react-icons/si"; // Removed unused imports
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import {

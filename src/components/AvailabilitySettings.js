@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { getAvailability, updateUserProfile } from "../services/api";
 import {
-  getAvailability,
-  updateAvailability,
-  updateUserProfile,
-} from "../services/api";
-import {
-  LuClock,
   LuCopy,
   LuPlus,
   LuX,
   LuRefreshCw,
   LuCalendarDays,
-  LuChevronDown,
 } from "react-icons/lu";
 import "./AvailabilitySettings.css"; // Styles will need significant updates
 
@@ -51,7 +45,6 @@ const defaultSchedule = {
 const AvailabilitySettings = () => {
   const [schedule, setSchedule] = useState(defaultSchedule);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false); // May be needed for inline saves later
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("horario"); // State for tabs
   const [timeZone, setTimeZone] = useState("America/Buenos_Aires"); // State for timezone

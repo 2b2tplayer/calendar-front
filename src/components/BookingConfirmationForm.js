@@ -19,6 +19,7 @@ const BookingConfirmationForm = ({
   timeZone = "Buenos Aires", // Default or fetched
   onBack,
   onSubmit,
+  isSubmitting,
 }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -26,32 +27,22 @@ const BookingConfirmationForm = ({
     phone: "",
     notes: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     // Basic validation (can be enhanced)
     if (!formData.name || !formData.email || !formData.phone) {
       alert("Por favor completa los campos requeridos.");
-      setIsSubmitting(false);
       return;
     }
-    try {
-      await onSubmit(formData); // Call the submit handler passed from BookingPage
-      // Success is handled in BookingPage (alert/navigation)
-    } catch (error) {
-      // Optional: catch errors from the onSubmit prop if it throws
-      console.error("Error during submission handler:", error);
-      alert("Error al intentar guardar la reserva.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Call the onSubmit prop passed from BookingPage
+    // Parent (BookingPage) will handle setting isSubmitting and API call
+    onSubmit(formData);
   };
 
   const formattedDate = selectedDate

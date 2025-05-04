@@ -23,7 +23,7 @@ const BookingPage = () => {
   const [isLoadingSchedule, setIsLoadingSchedule] = useState(true); // Loading state for schedule
   const [selectedTime, setSelectedTime] = useState(null);
   const [bookingStep, setBookingStep] = useState("select_date_time");
-  const [timeZone, setTimeZone] = useState("America/Buenos_Aires"); // Get user's actual TZ later
+  const [timeZone /*setTimeZone*/] = useState("America/Buenos_Aires"); // Remove setTimeZone as it's unused
   const [eventTypeId, setEventTypeId] = useState(null); // Need to get this!
   const [eventDetails, setEventDetails] = useState({}); // To store duration, name etc.
   const [isSubmitting, setIsSubmitting] = useState(false); // Add this state variable
@@ -257,6 +257,7 @@ const BookingPage = () => {
           timeZone={timeZone} // Pass the current timeZone
           onBack={handleBackToSelect}
           onSubmit={handleBookingSubmit}
+          isSubmitting={isSubmitting} // Pass isSubmitting state
         />
       )}
     </div>

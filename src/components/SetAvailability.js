@@ -14,17 +14,6 @@ const defaultSchedule = {
   sunday: { start: "09:00", end: "13:00", isWorking: false },
 };
 
-// Mapeo de nombres de día a letras
-const dayMap = {
-  sunday: "D", // Asumiendo que D es Domingo
-  monday: "L",
-  tuesday: "M",
-  wednesday: "M",
-  thursday: "J",
-  friday: "V",
-  saturday: "S",
-};
-
 // Mapeo de día a nombre completo (para labels)
 const dayNameMap = {
   sunday: "Domingo",
