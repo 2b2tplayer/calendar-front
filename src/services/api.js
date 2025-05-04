@@ -359,6 +359,26 @@ export const cancelBooking = async (id, cancelData) => {
   }
 };
 
+// New DELETE endpoint based on latest documentation
+export const deleteBooking = async (id) => {
+  try {
+    const response = await apiClient.delete(`/bookings/${id}`);
+    return handleResponse(response); // Should return success or throw error
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// Endpoint for public booking page data
+export const getPublicBookingData = async (username, slug) => {
+  try {
+    const response = await apiClient.get(`/bookings/book/${username}/${slug}`);
+    return handleResponse(response); // Expected { eventType: {...}, availableSlots: [...] }
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 // --- Google Calendar ---
 
 // Initiate Google Calendar connection
@@ -402,12 +422,16 @@ export const disconnectGoogleCalendar = async () => {
 // --- Salud API ---
 export const checkApiHealth = async () => {
   try {
-    // No usamos apiClient aquí porque no necesita JSON y podría fallar distinto
-    const response = await fetch(`${API_BASE_URL}/health`);
-    return response.ok; // Devuelve true si status es 2xx
+    // Use apiClient to leverage interceptors and consistent error handling
+    // Assuming /health returns standard { success: true, data: {...} }
+    const response = await apiClient.get("/health");
+    return handleResponse(response); // Let handleResponse check success/error
   } catch (error) {
-    console.error("Health check failed:", error);
-    return false;
+    // Let handleError manage the error consistently
+    handleError(error);
+    // Optional: Return a specific value indicating failure if needed upstream
+    // For example: return { success: false, error: error.message };
+    // But throwing is generally better for signaling failure.
   }
 };
 
