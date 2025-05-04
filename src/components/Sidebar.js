@@ -7,6 +7,7 @@ import {
   LuPhone,
   LuSettings,
   LuChevronDown,
+  LuUser,
 } from "react-icons/lu";
 import { FaHome } from "react-icons/fa"; // Import FaHome from Font Awesome
 
@@ -22,9 +23,6 @@ const Sidebar = ({
   // Usar datos del usuario o valores por defecto si no están disponibles
   const userName = userData?.name || "Usuario";
   const userEmail = userData?.email || "email@ejemplo.com";
-  // Usar profilePicture o un placeholder
-  const userAvatar =
-    userData?.profilePicture || "https://via.placeholder.com/30";
 
   return (
     <div className="sidebar">
@@ -126,8 +124,17 @@ const Sidebar = ({
           </ul>
         </nav>
         <div className="user-profile">
-          <img src={userAvatar} alt="Avatar" className="user-avatar" />{" "}
-          {/* Reemplaza con la imagen real */}
+          {userData?.profilePicture ? (
+            <img
+              src={userData.profilePicture}
+              alt="Avatar"
+              className="user-avatar"
+            />
+          ) : (
+            <div className="user-avatar placeholder-avatar">
+              <LuUser />
+            </div>
+          )}
           <div className="user-info">
             <span className="user-name">{userName}</span>
             <span className="user-email">{userEmail}</span>

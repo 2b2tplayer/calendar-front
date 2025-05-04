@@ -1,0 +1,210 @@
+/* Styles for BookingPage component */
+
+.booking-page-container {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  background-color: #f9f9f9; /* Light background for the page */
+  min-height: 100vh;
+}
+
+.booking-content {
+  display: flex;
+  gap: 30px;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px; /* Adjust max-width as needed */
+  width: 100%;
+}
+
+.calendar-section,
+.timeslot-section {
+  flex: 1;
+}
+
+.calendar-section h2,
+.timeslot-section h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.4em;
+  color: #333;
+}
+
+/* Calendar specific styles (can reuse/adapt from AvailabilitySettings.css) */
+.booking-calendar {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+}
+
+.booking-calendar .react-calendar__navigation button {
+  min-width: 40px;
+  background: none;
+  border: none;
+  font-size: 1.1em;
+  color: #555;
+  cursor: pointer;
+}
+
+.booking-calendar .react-calendar__navigation button:hover {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* Style weekday headers */
+.booking-calendar .react-calendar__month-view__weekdays {
+  display: grid; /* Use grid */
+  grid-template-columns: repeat(7, 1fr); /* Force 7 equal columns */
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.booking-calendar .react-calendar__month-view__weekdays abbr {
+  text-decoration: none; /* Remove underline */
+  font-size: 0.8em; /* Adjust size */
+}
+
+/* Ensure day tiles container doesn't stretch items */
+.booking-calendar .react-calendar__month-view__days {
+  align-items: center; /* Prevent stretching if it's a flex container */
+  justify-content: center; /* Center days if needed */
+}
+
+.booking-calendar .react-calendar__month-view__days__day {
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 50%; /* Make tile circular */
+  border: none; /* Remove border */
+  aspect-ratio: 1 / 1; /* Ensure it remains circular */
+  display: flex; /* Use flex to center number */
+  justify-content: center;
+  align-items: center;
+  margin: 1px auto; /* Center horizontally within grid cell, add tiny vertical margin */
+  height: 36px; /* Slightly reduce size */
+  width: 36px; /* Slightly reduce size */
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+  flex-shrink: 0; /* Prevent shrinking/growing if in flex */
+}
+
+.booking-calendar .react-calendar__month-view__days__day abbr {
+  text-decoration: none;
+  /* Let parent flexbox handle centering */
+  display: block; /* Ensure it takes space */
+  /* Remove previous flex attempts on abbr */
+  /* line-height: normal; */
+  /* width: 100%; */
+  /* height: 100%; */
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+}
+
+.booking-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  color: #ccc;
+  background-color: transparent !important; /* Ensure no background */
+}
+
+/* Style for available days (placeholder) */
+.booking-calendar .available-day {
+  background-color: #e6f0ff; /* Light blue background */
+  color: #1a73e8; /* Blue text */
+  font-weight: normal; /* Remove bold for cleaner look */
+  cursor: pointer;
+}
+
+.booking-calendar .available-day:hover {
+  background-color: #d0e0ff; /* Slightly darker blue on hover */
+}
+
+/* Style for booked/unavailable days (placeholder) */
+.booking-calendar .booked-day {
+  color: #ccc;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  background-color: transparent !important;
+}
+
+.booking-calendar .react-calendar__tile--active {
+  background-color: #1a73e8 !important; /* Use a stronger blue for active */
+  color: white;
+}
+
+.booking-calendar .react-calendar__tile--active:hover {
+  background-color: #1565c0 !important; /* Darker blue on active hover */
+}
+
+.booking-calendar .react-calendar__tile--now {
+  background-color: transparent; /* Remove today background */
+  border: 1px solid #1a73e8; /* Add border for today */
+}
+
+/* Adjust now & active combination */
+.booking-calendar .react-calendar__tile--now.react-calendar__tile--active {
+  border: none; /* Remove border if selected */
+}
+
+/* Adjust now & available combination */
+.booking-calendar .react-calendar__tile--now.available-day {
+  border: 1px solid #1a73e8; /* Keep border if available but not selected */
+}
+
+/* Timeslot styles */
+.timeslot-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px; /* Limit height and make scrollable */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeslot-button {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #6a67f3; /* Primary color border */
+  border-radius: 4px;
+  background-color: #fff;
+  color: #6a67f3; /* Primary color text */
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.timeslot-button:hover {
+  background-color: #6a67f3; /* Primary color background */
+  color: #fff; /* White text */
+}
+
+.error-message {
+  color: #e53e3e;
+  background-color: #fff5f5;
+  border: 1px solid #fc8181;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-top: 15px;
+}
+
+/* Responsive adjustments if needed */
+@media (max-width: 768px) {
+  .booking-content {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .timeslot-list {
+    max-height: none; /* Remove height limit on smaller screens */
+  }
+}

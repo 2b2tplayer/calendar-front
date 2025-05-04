@@ -12,6 +12,8 @@ import {
   LuCalendarDays,
   LuChevronLeft,
   LuChevronRight,
+  LuExternalLink,
+  LuUser,
 } from "react-icons/lu";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
@@ -19,11 +21,12 @@ import EventTypeList from "./EventTypeList";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-const Dashboard = ({ userData }) => {
+// Key for localStorage
+const LAYOUT_STORAGE_KEY = "dashboardLayouts";
+
+const Dashboard = ({ userData, showBookingPage, showCreateEventTypeForm }) => {
   // Revert greeting name
   const userName = userData?.name || "Santiago";
-  const userAvatar =
-    userData?.profilePicture || "https://via.placeholder.com/40";
 
   const [eventTypes, setEventTypes] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -31,29 +34,43 @@ const Dashboard = ({ userData }) => {
   const [error, setError] = useState(null);
   const [calendarDate, setCalendarDate] = useState(new Date());
 
+  // Load initial layout from storage or use default
+  const getInitialLayouts = () => {
+    try {
+      const savedLayouts = localStorage.getItem(LAYOUT_STORAGE_KEY);
+      return savedLayouts ? JSON.parse(savedLayouts) : initialLayouts; // Use default if nothing saved
+    } catch (error) {
+      console.error("Error reading layouts from localStorage:", error);
+      return initialLayouts; // Fallback to default on error
+    }
+  };
+
   // Adjust initial layout heights (h) for content
   const initialLayouts = {
     lg: [
-      { i: "calendar", x: 0, y: 0, w: 6, h: 11 }, // Slightly taller for calendar
-      { i: "heatmap", x: 6, y: 0, w: 6, h: 7 }, // Shorter for 7-row heatmap
-      { i: "eventTypesList", x: 0, y: 11, w: 12, h: 10 }, // Add EventTypeList - spans full width initially below heatmap/calendar
-      { i: "totalMeetings", x: 0, y: 21, w: 3, h: 6 }, // Move other cards down
-      { i: "totalTime", x: 3, y: 21, w: 3, h: 6 }, // Taller for donut chart
-      { i: "tools", x: 6, y: 7, w: 3, h: 5 }, // Adjusted position/height
-      { i: "cancellations", x: 9, y: 7, w: 3, h: 6 }, // Adjusted position/height
+      { i: "calendar", x: 0, y: 0, w: 6, h: 11 },
+      { i: "heatmap", x: 6, y: 0, w: 6, h: 5 }, // Reduced height for 7x7
+      { i: "eventTypesList", x: 0, y: 11, w: 12, h: 10 },
+      { i: "totalMeetings", x: 0, y: 21, w: 3, h: 6 },
+      { i: "totalTime", x: 3, y: 21, w: 3, h: 6 },
+      // { i: "tools", x: 6, y: 7, w: 3, h: 5 }, // Removed tools card from layout
+      { i: "cancellations", x: 9, y: 7, w: 3, h: 6 },
     ],
     // Define layouts for other breakpoints (md, sm, xs) if needed
   };
 
-  const [layouts, setLayouts] = useState(initialLayouts);
+  const [layouts, setLayouts] = useState(getInitialLayouts());
 
   // Handler for layout changes (drag/resize)
   const onLayoutChange = (layout, newLayouts) => {
-    // Note: newLayouts provides layout for all breakpoints
-    // Only update if you want layout changes to persist across breakpoints
-    // Or update only the current breakpoint's layout if needed
-    setLayouts(newLayouts);
-    // TODO: Consider saving layout changes (e.g., to localStorage or backend)
+    // Save the changed layouts to localStorage
+    try {
+      localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(newLayouts));
+      setLayouts(newLayouts); // Update state as well
+    } catch (error) {
+      console.error("Error saving layouts to localStorage:", error);
+      setLayouts(newLayouts); // Still update state even if saving fails
+    }
   };
 
   // useEffect for loading data (remains largely the same)
@@ -164,11 +181,22 @@ const Dashboard = ({ userData }) => {
           <h2>Hola {userName},</h2>
           <h1>Bienvenido a Calendar</h1>
         </div>
-        <img
-          src={userAvatar}
-          alt="User Avatar"
-          className="user-avatar-dashboard"
-        />
+        <div className="header-actions">
+          <button onClick={showBookingPage} className="view-booking-button">
+            Ver página de reservas <LuExternalLink />
+          </button>
+          {userData?.profilePicture ? (
+            <img
+              src={userData.profilePicture}
+              alt="User Avatar"
+              className="user-avatar-dashboard"
+            />
+          ) : (
+            <div className="user-avatar-dashboard placeholder-avatar">
+              <LuUser />
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Use ReactGridLayout instead of CSS Grid */}
@@ -181,6 +209,7 @@ const Dashboard = ({ userData }) => {
         isDraggable
         isResizable
         onLayoutChange={onLayoutChange} // Handle layout updates
+        draggableCancel="button"
         // compactType="vertical" // or "horizontal"
         // useCSSTransforms={true} // Enable smoother animations
       >
@@ -228,10 +257,11 @@ const Dashboard = ({ userData }) => {
             {["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"].map((day) => (
               <div key={day} className="heatmap-col">
                 <span className="day-label">{day}</span>
-                {/* Generate fixed number of cells (e.g., 15) */}
-                {[...Array(15)].map((_, i) => {
+                {/* Generate 7 cells instead of 15 */}
+                {[...Array(7)].map((_, i) => {
+                  // Changed 15 to 7
                   // Simple past/future split for color demo (adjust threshold)
-                  const isPast = i < 8;
+                  const isPast = i < 4; // Adjust threshold for 7 cells
                   const baseOpacity = isPast ? 0.6 : 0.3;
                   const randomIntensity = Math.random() * 0.5;
                   const finalOpacity = baseOpacity + randomIntensity;
@@ -256,14 +286,14 @@ const Dashboard = ({ userData }) => {
         >
           <EventTypeList
             userData={userData}
-            onCreateClick={() => alert("Navigate to Create Event Form")}
+            onCreateClick={showCreateEventTypeForm}
           />
         </div>
 
         <div key="totalMeetings" className="dashboard-card stats-card">
           <h4>Total de reuniones agendadas</h4>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={120}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={totalMeetingsData}
@@ -295,7 +325,7 @@ const Dashboard = ({ userData }) => {
         <div key="totalTime" className="dashboard-card stats-card">
           <h4>Tiempo total en reuniones</h4>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={120}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={totalTimeData}
@@ -324,6 +354,7 @@ const Dashboard = ({ userData }) => {
           </div>
         </div>
 
+        {/* Removed Tools Card
         <div key="tools" className="dashboard-card tools-card">
           <h4>Herramientas conectadas</h4>
           <div className="tools-grid-simple">
@@ -344,6 +375,7 @@ const Dashboard = ({ userData }) => {
             </div>
           </div>
         </div>
+        */}
 
         <div
           key="cancellations"
@@ -351,7 +383,7 @@ const Dashboard = ({ userData }) => {
         >
           <h4>Tasa de cancelaciones / Reprogramaciones</h4>
           <div className="chart-container cancellation-chart-container">
-            <ResponsiveContainer width="100%" height={120}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={cancellationData}

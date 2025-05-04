@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./OnboardingSteps.css";
-import { getAvailability, updateAvailability } from "../services/api"; // Importar funciones API
-import { LuPencil } from "react-icons/lu"; // Importar icono de lápiz
+import { getAvailability, updateAvailability, logout } from "../services/api"; // Importar funciones API y logout
+import { LuPlus } from "react-icons/lu"; // Usar un ícono consistente
 
 // Estructura inicial para la disponibilidad por defecto
 const defaultSchedule = {
@@ -25,15 +25,26 @@ const dayMap = {
   saturday: "S",
 };
 
+// Mapeo de día a nombre completo (para labels)
+const dayNameMap = {
+  sunday: "Domingo",
+  monday: "Lunes",
+  tuesday: "Martes",
+  wednesday: "Miércoles",
+  thursday: "Jueves",
+  friday: "Viernes",
+  saturday: "Sábado",
+};
+
 // Orden deseado de los días
 const dayOrder = [
-  "sunday",
   "monday",
   "tuesday",
   "wednesday",
   "thursday",
   "friday",
   "saturday",
+  "sunday",
 ];
 
 const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
@@ -50,7 +61,6 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
       try {
         const currentAvailability = await getAvailability();
         if (currentAvailability && currentAvailability.schedule) {
-          // Completar con default si faltan días en la respuesta
           const completeSchedule = dayOrder.reduce((acc, day) => {
             acc[day] =
               currentAvailability.schedule[day] || defaultSchedule[day];
@@ -58,7 +68,6 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
           }, {});
           setSchedule(completeSchedule);
         } else {
-          // Si devuelve null (404) o no tiene .schedule, usar default
           setSchedule(defaultSchedule);
         }
       } catch (err) {
@@ -66,7 +75,7 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
         setError(
           "No se pudo cargar la disponibilidad. Usando horario por defecto."
         );
-        setSchedule(defaultSchedule); // Asegurar que se use el default en error
+        setSchedule(defaultSchedule);
       } finally {
         setIsLoading(false);
       }
@@ -74,20 +83,97 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
     loadAvailability();
   }, []);
 
+  const handleScheduleChange = (day, field, value) => {
+    // Only update if isWorking is true for time changes
+    if ((field === "start" || field === "end") && !schedule[day].isWorking) {
+      // When turning a day off, we might want to clear times or keep them
+      // For now, just prevent time changes if off
+      return;
+    }
+
+    // Handle checkbox toggle for isWorking
+    if (field === "isWorking") {
+      value = !schedule[day].isWorking;
+    }
+
+    setSchedule((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value,
+      },
+    }));
+  };
+
   const handleContinue = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
     try {
-      // Guardar el horario actual (el que se cargó o el default)
       await updateAvailability({ schedule });
       nextStep();
     } catch (err) {
       console.error("Error updating availability:", err);
       setError("Error al guardar la disponibilidad. Inténtalo de nuevo.");
-    } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Allow retry on error
     }
+    // No need for finally here if nextStep navigates away
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // Redirect to login or clear state - depends on App structure
+      // For now, just log out and reload
+      window.location.reload(); // Simple reload to force state clear / redirect
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Error al cerrar sesión.");
+    }
+  };
+
+  const renderDayRow = (day) => {
+    const details = schedule[day] || defaultSchedule[day];
+    const dayLabel = dayNameMap[day];
+    const isWorking = details.isWorking;
+
+    return (
+      <div key={day} className="day-availability-row">
+        <label className="toggle-switch">
+          <input
+            type="checkbox"
+            checked={isWorking}
+            onChange={() => handleScheduleChange(day, "isWorking")}
+          />
+          <span className="slider round"></span>
+        </label>
+        <span className="day-name-label">{dayLabel}</span>
+        <div className="time-inputs">
+          <input
+            type="time"
+            value={details.start}
+            disabled={!isWorking}
+            onChange={(e) => handleScheduleChange(day, "start", e.target.value)}
+            className={!isWorking ? "disabled" : ""}
+          />
+          <span>-</span>
+          <input
+            type="time"
+            value={details.end}
+            disabled={!isWorking}
+            onChange={(e) => handleScheduleChange(day, "end", e.target.value)}
+            className={!isWorking ? "disabled" : ""}
+          />
+        </div>
+        <button
+          type="button"
+          className="add-interval-button"
+          disabled={!isWorking}
+        >
+          <LuPlus />
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -100,73 +186,40 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
           ></div>
         ))}
       </div>
-      <div className="onboarding-card availability-card">
-        <h4>Disponibilidad</h4>
-
-        <h5>Intervalos de fechas</h5>
-        <p className="availability-description">
-          Los invitados pueden programar eventos en el futuro, en 60 dias, y con
-          una antelación mínima de 4 horas para notificarlos.
+      <div className="onboarding-card form-card set-availability-card">
+        <h3>Establecer Disponibilidad</h3>
+        <p className="description">
+          Define los rangos de tiempo en los que estas disponible Puedes
+          personalizar todo esto mas tarde en la pagina de disponibilidad
         </p>
 
         {isLoading ? (
           <div>Cargando disponibilidad...</div>
         ) : (
-          <div className="weekly-hours-section">
-            <div className="default-schedule-notice">
-              <span>
-                Este tipo de eventos utiliza su{" "}
-                <strong>horario por defecto</strong>
-              </span>
-              <button className="edit-button">
-                <LuPencil />
-              </button>
-            </div>
-
-            <h6>
-              <span role="img" aria-label="refresh">
-                🔄
-              </span>{" "}
-              Horas semanales
-            </h6>
-            <ul className="availability-list">
-              {dayOrder.map((day) => {
-                const details = schedule[day] || defaultSchedule[day]; // Fallback por si acaso
-                return (
-                  <li key={day} className="availability-item">
-                    <span className="day-letter">{dayMap[day]}</span>
-                    <span className="day-schedule">
-                      {details.isWorking
-                        ? `${details.start} - ${details.end}`
-                        : "No disponible"}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
+          <div className="availability-editor">
+            {dayOrder.map(renderDayRow)}
           </div>
         )}
 
-        {error && <p style={{ color: "red", marginTop: "15px" }}>{error}</p>}
+        {error && <p className="error-message">{error}</p>}
 
         <button
-          type="button"
+          type="button" // Changed to button as it doesn't submit a form directly here
           onClick={handleContinue}
-          className="submit-button"
+          className="submit-button main-continue-button"
           disabled={isSubmitting || isLoading}
-          style={{ marginTop: "20px" }}
         >
           {isSubmitting ? "Guardando..." : "Continuar >"}
         </button>
 
-        <div className="optional-links">
-          <button type="button" onClick={prevStep} className="link-button">
-            Atrás
-          </button>
-          <button type="button" className="link-button danger">
-            Cerrar sesión
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="link-button logout-button"
+        >
+          Cerrar sesión
+        </button>
+        {/* Removed back button as it's not in the design */}
       </div>
     </div>
   );

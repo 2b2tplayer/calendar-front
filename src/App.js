@@ -11,6 +11,7 @@ import OnboardingComplete from "./components/OnboardingComplete";
 import Dashboard from "./components/Dashboard"; // Importar Dashboard
 import EventTypeForm from "./components/EventTypeForm"; // Importar nuevo formulario
 import AvailabilitySettings from "./components/AvailabilitySettings"; // Importar nuevo componente
+import BookingPage from "./components/BookingPage"; // Import BookingPage
 import { getCurrentUser, getToken, setToken } from "./services/api"; // Importar función API y manejo de token
 
 const TOTAL_ONBOARDING_STEPS = 5; // Pasos reales antes de la pantalla final
@@ -89,12 +90,17 @@ function App() {
   };
 
   const showCreateEventTypeForm = () => {
+    console.log("Attempting to show Create Event Type form...");
     setCurrentView("createEventType");
   };
 
   const showAvailabilitySettings = () => {
-    // Nueva función
     setCurrentView("availability");
+  };
+
+  // Function to show the booking page
+  const showBookingPage = () => {
+    setCurrentView("booking");
   };
 
   const handleEventTypeCreated = (newEvent) => {
@@ -191,9 +197,18 @@ function App() {
       case "availability":
         mainContent = <AvailabilitySettings />;
         break;
+      case "booking": // Add case for booking view
+        mainContent = <BookingPage />;
+        break;
       case "dashboard":
       default:
-        mainContent = <Dashboard userData={userData} />;
+        mainContent = (
+          <Dashboard
+            userData={userData}
+            showBookingPage={showBookingPage}
+            showCreateEventTypeForm={showCreateEventTypeForm}
+          />
+        );
         break;
     }
   }

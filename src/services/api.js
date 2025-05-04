@@ -214,13 +214,19 @@ export const updateAvailability = async (availabilityData) => {
   }
 };
 
+// Get available time slots for a specific event type and date
 export const getAvailabilitySlots = async (params) => {
-  // GET /availability/slots?eventTypeId=...&date=...&timezone=...
+  // params = { eventTypeId: string, date: string (YYYY-MM-DD), timezone: string }
   try {
     const queryString = new URLSearchParams(params).toString();
+    console.log(`API Call: GET /availability/slots?${queryString}`); // Log the actual call
     const response = await apiClient.get(`/availability/slots?${queryString}`);
-    return handleResponse(response); // Devuelve array de slots
+    // The API doc doesn't explicitly show the structure for THIS endpoint,
+    // but assuming it returns an array of time strings directly in the data field.
+    // Adjust if the backend returns slots within a nested object.
+    return handleResponse(response); // Expects array like ["09:00", "09:30"]
   } catch (error) {
+    // Handle specific errors? e.g., 404 if event type not found?
     handleError(error);
   }
 };
@@ -349,18 +355,11 @@ export const rescheduleBooking = async (id, rescheduleData) => {
   }
 };
 
-export const cancelBooking = async (id, cancelData) => {
-  // cancelData es { reason, token? }
-  try {
-    const response = await apiClient.put(`/bookings/${id}/cancel`, cancelData);
-    return handleResponse(response);
-  } catch (error) {
-    handleError(error);
-  }
-};
-
-// New DELETE endpoint based on latest documentation
-export const deleteBooking = async (id) => {
+// Cancel a booking (using DELETE)
+export const cancelBooking = async (id) => {
+  // The documentation now specifies DELETE /bookings/:id
+  // The old PUT endpoint might be deprecated or removed.
+  // Reason is not typically sent in DELETE body, handle on backend if needed.
   try {
     const response = await apiClient.delete(`/bookings/${id}`);
     return handleResponse(response); // Should return success or throw error

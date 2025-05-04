@@ -6,6 +6,7 @@ import {
   LuExternalLink,
   LuLock,
   LuGlobe,
+  LuUser,
 } from "react-icons/lu"; // Import icons
 import "./EventTypeList.css"; // We'll create this CSS file
 
@@ -16,8 +17,6 @@ const EventTypeList = ({ onCreateClick, userData }) => {
 
   // Use data or placeholders
   const userName = userData?.name || "Santiago";
-  const userAvatar =
-    userData?.profilePicture || "https://via.placeholder.com/40";
   // Placeholder link - replace with actual data structure if available
   const userProfileLink =
     userData?.profileUrl ||
@@ -104,7 +103,18 @@ const EventTypeList = ({ onCreateClick, userData }) => {
     <div className="event-type-list-container">
       <div className="event-type-list-header">
         <div className="user-info-header">
-          <img src={userAvatar} alt={userName} className="user-avatar-small" />
+          {/* Conditional rendering for avatar */}
+          {userData?.profilePicture ? (
+            <img
+              src={userData.profilePicture}
+              alt={userName}
+              className="user-avatar-small"
+            />
+          ) : (
+            <div className="user-avatar-small placeholder-avatar">
+              <LuUser /> {/* Render icon */}
+            </div>
+          )}
           <div>
             <span className="user-name-header">{userName}</span>
             <a
@@ -118,7 +128,13 @@ const EventTypeList = ({ onCreateClick, userData }) => {
             </a>
           </div>
         </div>
-        <button onClick={onCreateClick} className="create-event-button">
+        <button
+          onClick={() => {
+            console.log("Create Event button clicked in EventTypeList!");
+            onCreateClick();
+          }}
+          className="create-event-button"
+        >
           <LuPlus size={18} /> Crear Evento
         </button>
       </div>

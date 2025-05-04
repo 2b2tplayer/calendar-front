@@ -312,3 +312,165 @@ input:checked + .slider:before {
 }
 
 /* --- End Styles for Connect Calendar --- */
+
+/* --- SetAvailability Specific Styles --- */
+
+.set-availability-card h3 {
+  font-size: 1.6em;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.set-availability-card .description {
+  font-size: 0.95em;
+  color: #666;
+  text-align: center;
+  margin-bottom: 30px;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.availability-editor {
+  margin-bottom: 30px;
+}
+
+.day-availability-row {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  gap: 15px; /* Spacing between elements */
+}
+.day-availability-row:last-child {
+  border-bottom: none;
+}
+
+.day-name-label {
+  flex-basis: 80px; /* Fixed width for day name */
+  flex-shrink: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-grow: 1; /* Allow time inputs to take remaining space */
+}
+
+.time-inputs input[type="time"] {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9em;
+  width: 100px; /* Adjust width */
+}
+
+.time-inputs input[type="time"].disabled {
+  background-color: #f8f8f8;
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+
+.time-inputs span {
+  color: #888;
+}
+
+.add-interval-button {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 5px;
+}
+.add-interval-button:disabled {
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+.main-continue-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1em;
+}
+
+.logout-button {
+  display: block;
+  margin: 15px auto 0 auto;
+  color: #888;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.logout-button:hover {
+  color: #555;
+}
+
+/* --- Toggle Switch Styles --- */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px; /* Width of the switch */
+  height: 24px; /* Height of the switch */
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc; /* Default background */
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; /* Size of the knob */
+  width: 18px;
+  left: 3px; /* Position of the knob */
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #6a67f3; /* Active color */
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px); /* Move knob to the right */
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Error message style if needed in this component */
+.set-availability-card .error-message {
+  color: #ef4444;
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: -15px; /* Adjust spacing */
+  margin-bottom: 20px;
+}

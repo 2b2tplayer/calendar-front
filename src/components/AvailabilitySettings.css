@@ -1,147 +1,216 @@
-/* Styles for AvailabilitySettings component */
+/* Styles for AvailabilitySettings component - NEW DESIGN */
 
-.availability-settings-container {
-  padding: 20px;
+.availability-settings-page {
+  padding: 25px 30px;
+  background-color: #f9fafb; /* Match dashboard bg */
 }
 
-.availability-card {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 15px;
+.availability-settings-page h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #111;
 }
 
-.availability-card-header {
+/* Tabs */
+.tabs {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+  margin-bottom: 30px;
   border-bottom: 1px solid #eee;
 }
 
-.availability-card-header h4 {
-  margin: 0;
-  font-size: 1.1em;
-}
-
-.edit-button-main,
-.save-button,
-.cancel-button {
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: 1px solid transparent;
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: transparent;
   cursor: pointer;
+  font-size: 14px;
   font-weight: 500;
-}
-
-.edit-button-main {
-  background-color: #f0f0f0;
-  border-color: #ddd;
-  color: #333;
-}
-
-.cancel-button {
-  background-color: #eee;
-  border-color: #ccc;
   color: #555;
-  margin-right: 10px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px; /* Overlap container border */
+  transition: color 0.2s, border-color 0.2s;
 }
 
-.save-button {
-  background-color: #6a67f3; /* Use a primary color */
-  color: white;
+.tab-button:hover {
+  color: #111;
 }
 
-.availability-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.tab-button.active {
+  color: #6a67f3; /* Primary color */
+  border-bottom-color: #6a67f3;
 }
 
-.availability-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
+/* Tab Content */
+.tab-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.availability-item:last-child {
+.content-section {
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.content-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
   border-bottom: none;
 }
 
-.availability-item.not-working .day-schedule {
-  color: #999;
+.content-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 5px 0;
 }
 
-.day-letter {
-  background-color: #eef2f7;
-  color: #5a6ac5;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 15px;
+.content-section p,
+.content-section .section-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 15px 0;
+  line-height: 1.5;
 }
 
-.day-schedule {
-  font-size: 0.95em;
-}
-
-/* Edit Form Styles */
-.availability-edit-form {
-  margin-top: 15px;
-}
-
-.edit-day-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.edit-day-row:last-child {
-  border-bottom: none;
-}
-
-.edit-day-label {
+.section-header {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 8px; /* Space between header and description */
 }
 
-.edit-day-label label {
-  font-weight: 500;
+.section-header svg {
+  color: #666;
+  font-size: 1.2em;
 }
 
-.edit-time-inputs {
+.section-header h4 {
+  margin-bottom: 0;
+}
+
+/* Horario Predeterminado Specific */
+.horario-predeterminado p {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+/* Horas Semanales Specific */
+.schedule-list {
+  margin-top: 10px;
+}
+
+.schedule-day-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  gap: 15px;
+}
+
+.day-letter-icon {
+  background-color: #eef2f7;
+  color: #5a6ac5;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600; /* Make letter bold */
+  flex-shrink: 0;
+}
+
+.day-time-display {
+  font-size: 14px;
+  color: #333;
+  flex-grow: 1; /* Take available space */
+  min-width: 100px; /* Prevent shrinking too much */
+}
+
+.schedule-day-row.unavailable .day-time-display {
+  color: #999;
+}
+
+.day-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.edit-time-inputs input[type="time"] {
-  padding: 5px 8px;
-  border: 1px solid #ccc;
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #777;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.edit-time-inputs input[type="time"]:disabled {
+.icon-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.icon-button.delete-button:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Zona Horaria */
+.zona-horaria label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.timezone-select-element {
+  /* Make it look like the placeholder but work */
+  display: inline-block;
+  -webkit-appearance: none; /* Remove default styling */
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff; /* White background */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); /* Simple chevron down icon */
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 30px 8px 12px; /* Add padding for icon */
+}
+
+/* Horas Especificas */
+.add-specific-hours-button {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #555;
+  border-radius: 20px; /* Pill shape */
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.add-specific-hours-button:hover {
   background-color: #f8f8f8;
-  cursor: not-allowed;
+  border-color: #ccc;
 }
 
+/* General Error Message */
 .error-message {
-  color: #e53e3e; /* Red color for errors */
-  background-color: #fff5f5; /* Light red background */
-  border: 1px solid #fc8181; /* Red border */
+  color: #e53e3e;
+  background-color: #fff5f5;
+  border: 1px solid #fc8181;
   border-radius: 4px;
   padding: 10px 15px;
-  margin-bottom: 15px;
+  margin-top: 15px;
   font-size: 0.9em;
 }

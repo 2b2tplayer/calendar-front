@@ -96,15 +96,20 @@ const EventTypeForm = ({ onSuccess, onCancel }) => {
           <label htmlFor="duration">Duración</label>
           <div className="duration-input">
             <LuClock />
-            <input
-              type="number"
+            <select
               id="duration"
               name="duration"
               value={formData.duration}
               onChange={handleChange}
-              min="1"
               required
-            />
+              className="duration-select"
+            >
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+              <option value="60">60</option>
+              <option value="90">90</option>
+            </select>
             <span>min</span>
           </div>
         </div>

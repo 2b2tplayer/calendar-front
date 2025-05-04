@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { getAvailability, updateAvailability } from "../services/api";
-import { LuPencil } from "react-icons/lu";
-import "./AvailabilitySettings.css"; // We'll need to create this CSS file
+import {
+  getAvailability,
+  updateAvailability,
+  updateUserProfile,
+} from "../services/api";
+import {
+  LuClock,
+  LuCopy,
+  LuPlus,
+  LuX,
+  LuRefreshCw,
+  LuCalendarDays,
+  LuChevronDown,
+} from "react-icons/lu";
+import "./AvailabilitySettings.css"; // Styles will need significant updates
 
 // Mapeo de nombres de día a letras
 const dayMap = {
@@ -16,13 +28,13 @@ const dayMap = {
 
 // Orden deseado de los días
 const dayOrder = [
-  "sunday",
   "monday",
   "tuesday",
   "wednesday",
   "thursday",
   "friday",
   "saturday",
+  "sunday",
 ];
 
 // Estructura inicial para la disponibilidad por defecto
@@ -39,16 +51,19 @@ const defaultSchedule = {
 const AvailabilitySettings = () => {
   const [schedule, setSchedule] = useState(defaultSchedule);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // May be needed for inline saves later
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("horario"); // State for tabs
+  const [timeZone, setTimeZone] = useState("America/Buenos_Aires"); // State for timezone
+  const [isSavingTimezone, setIsSavingTimezone] = useState(false);
 
-  // Cargar disponibilidad existente al montar
+  // Load availability and potentially user profile for initial timezone
   useEffect(() => {
-    const loadAvailability = async () => {
+    const loadData = async () => {
       setIsLoading(true);
       setError(null);
       try {
+        // Fetch availability first
         const currentAvailability = await getAvailability();
         if (currentAvailability && currentAvailability.schedule) {
           const completeSchedule = dayOrder.reduce((acc, day) => {
@@ -60,49 +75,100 @@ const AvailabilitySettings = () => {
         } else {
           setSchedule(defaultSchedule);
         }
+
+        // TODO: Fetch user profile data here if needed to get the initial timezone
+        // For now, we rely on the default state value or potentially a value from userData prop if passed
+        // Example: const userProfile = await getCurrentUser(); // Assuming getCurrentUser returns profile
+        // if (userProfile.timezone) setTimeZone(userProfile.timezone);
       } catch (err) {
-        console.error("Error loading availability:", err);
-        setError("No se pudo cargar la disponibilidad.");
+        console.error("Error loading availability settings data:", err);
+        setError("No se pudo cargar la configuración de disponibilidad.");
         setSchedule(defaultSchedule);
       } finally {
         setIsLoading(false);
       }
     };
-    loadAvailability();
+    loadData();
   }, []);
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-    // Reset error when toggling edit mode
-    setError(null);
-  };
-
-  const handleScheduleChange = (day, field, value) => {
-    // Only update if isWorking is true for time changes
-    if ((field === "start" || field === "end") && !schedule[day].isWorking) {
-      return;
-    }
-    setSchedule((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [field]: field === "isWorking" ? !prev[day].isWorking : value,
-      },
-    }));
-  };
-
-  const handleSaveChanges = async () => {
-    setIsSubmitting(true);
-    setError(null);
+  // Handle timezone change
+  const handleTimeZoneChange = async (e) => {
+    const newTimeZone = e.target.value;
+    setTimeZone(newTimeZone);
+    setIsSavingTimezone(true);
+    setError(null); // Clear previous errors
+    console.log("Attempting to save timezone:", newTimeZone);
     try {
-      await updateAvailability({ schedule });
-      setIsEditing(false); // Exit edit mode on success
+      // Call API to update profile with the new timezone
+      await updateUserProfile({ timezone: newTimeZone });
+      // Optional: Show a success message
     } catch (err) {
-      console.error("Error updating availability:", err);
-      setError("Error al guardar los cambios. Inténtalo de nuevo.");
+      console.error("Error saving timezone:", err);
+      setError("Error al guardar la zona horaria.");
+      // Optionally revert timezone state? Depends on desired UX
     } finally {
-      setIsSubmitting(false);
+      setIsSavingTimezone(false);
     }
+  };
+
+  // Placeholder handlers for new buttons
+  const handleAddInterval = (day) => {
+    console.log("Add interval for:", day);
+    // TODO: Implement logic to add a new time interval for the day
+    // This will require changes to the schedule state structure (e.g., array of intervals)
+  };
+
+  const handleRemoveInterval = (day, index) => {
+    console.log("Remove interval for:", day, "at index:", index);
+    // TODO: Implement logic to remove a specific time interval
+  };
+
+  const handleCopyHours = (day) => {
+    console.log("Copy hours from:", day);
+    // TODO: Implement logic to copy intervals from one day to others
+  };
+
+  // Render function for a single day row in the new format
+  const renderDayRow = (day) => {
+    const details = schedule[day] || defaultSchedule[day];
+    const isWorking = details.isWorking;
+    const timeDisplay = isWorking
+      ? `${details.start} - ${details.end}`
+      : "No disponible";
+
+    return (
+      <div
+        key={day}
+        className={`schedule-day-row ${!isWorking ? "unavailable" : ""}`}
+      >
+        <span className="day-letter-icon">{dayMap[day]}</span>
+        <span className="day-time-display">{timeDisplay}</span>
+        <div className="day-actions">
+          {isWorking && (
+            <button
+              onClick={() => handleRemoveInterval(day, 0)}
+              className="icon-button delete-button"
+            >
+              <LuX />
+            </button>
+          )}
+          <button
+            onClick={() => handleAddInterval(day)}
+            className="icon-button add-button"
+          >
+            <LuPlus />
+          </button>
+          {isWorking && (
+            <button
+              onClick={() => handleCopyHours(day)}
+              className="icon-button copy-button"
+            >
+              <LuCopy />
+            </button>
+          )}
+        </div>
+      </div>
+    );
   };
 
   if (isLoading) {
@@ -110,107 +176,100 @@ const AvailabilitySettings = () => {
   }
 
   return (
-    <div className="availability-settings-container">
-      <h3>Disponibilidad</h3>
+    <div className="availability-settings-page">
+      <h2>Disponibilidad</h2>
 
-      <div className="availability-card">
-        {/* Header with Edit/Save buttons */}
-        <div className="availability-card-header">
-          <h4>Horario Semanal</h4>
-          {!isEditing ? (
-            <button onClick={handleEditToggle} className="edit-button-main">
-              <LuPencil /> Editar
-            </button>
-          ) : (
-            <div>
-              <button
-                onClick={handleEditToggle}
-                className="cancel-button"
-                disabled={isSubmitting}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSaveChanges}
-                className="save-button"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Guardando..." : "Guardar Cambios"}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {error && <p className="error-message">{error}</p>}
-
-        {/* Display List or Edit Form */}
-        {!isEditing ? (
-          <ul className="availability-list">
-            {dayOrder.map((day) => {
-              const details = schedule[day] || defaultSchedule[day];
-              return (
-                <li
-                  key={day}
-                  className={`availability-item ${
-                    details.isWorking ? "" : "not-working"
-                  }`}
-                >
-                  <span className="day-letter">{dayMap[day]}</span>
-                  <span className="day-schedule">
-                    {details.isWorking
-                      ? `${details.start} - ${details.end}`
-                      : "No disponible"}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <div className="availability-edit-form">
-            {dayOrder.map((day) => {
-              const details = schedule[day] || defaultSchedule[day];
-              return (
-                <div key={day} className="edit-day-row">
-                  <div className="edit-day-label">
-                    <input
-                      type="checkbox"
-                      checked={details.isWorking}
-                      onChange={() => handleScheduleChange(day, "isWorking")}
-                      id={`edit-working-${day}`}
-                    />
-                    <label
-                      htmlFor={`edit-working-${day}`}
-                      style={{ textTransform: "capitalize" }}
-                    >
-                      {day} {/* Full day name might be better here */}
-                    </label>
-                  </div>
-                  <div className="edit-time-inputs">
-                    <input
-                      type="time"
-                      value={details.start}
-                      disabled={!details.isWorking}
-                      onChange={(e) =>
-                        handleScheduleChange(day, "start", e.target.value)
-                      }
-                    />
-                    <span>-</span>
-                    <input
-                      type="time"
-                      value={details.end}
-                      disabled={!details.isWorking}
-                      onChange={(e) =>
-                        handleScheduleChange(day, "end", e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+      <div className="tabs">
+        <button
+          className={`tab-button ${activeTab === "horario" ? "active" : ""}`}
+          onClick={() => setActiveTab("horario")}
+        >
+          Horario
+        </button>
+        <button
+          className={`tab-button ${activeTab === "festivos" ? "active" : ""}`}
+          onClick={() => setActiveTab("festivos")}
+        >
+          Festivos
+        </button>
+        <button
+          className={`tab-button ${
+            activeTab === "configuracion" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("configuracion")}
+        >
+          Configuración
+        </button>
       </div>
-      {/* Optionally add the "Intervalos de fechas" section here if needed */}
+
+      {activeTab === "horario" && (
+        <div className="tab-content">
+          <div className="content-section horario-predeterminado">
+            <h4>Horario predeterminado</h4>
+            {/* Placeholder count - fetch actual count later */}
+            <p>Activo en: 1 tipo de evento</p>
+          </div>
+
+          <div className="content-section horas-semanales">
+            <div className="section-header">
+              <LuRefreshCw /> {/* Icon for weekly hours */}
+              <h4>Horas semanales</h4>
+            </div>
+            <p className="section-description">
+              Establece cuando sueles estar disponible para las reuniones.
+            </p>
+            {error && <p className="error-message">{error}</p>}
+            <div className="schedule-list">{dayOrder.map(renderDayRow)}</div>
+          </div>
+
+          <div className="content-section zona-horaria">
+            <label htmlFor="timezone-select">Zona horaria</label>
+            <select
+              id="timezone-select"
+              name="timezone"
+              value={timeZone}
+              onChange={handleTimeZoneChange}
+              className="timezone-select-element"
+              disabled={isSavingTimezone}
+            >
+              <option value="America/Buenos_Aires">Buenos Aires (GMT-3)</option>
+              <option value="America/Santiago">Santiago (GMT-4/-3)</option>
+              <option value="America/Bogota">Bogotá (GMT-5)</option>
+              <option value="America/Mexico_City">
+                Ciudad de México (GMT-6)
+              </option>
+              <option value="America/Lima">Lima (GMT-5)</option>
+              <option value="Europe/Madrid">Madrid (GMT+1/+2)</option>
+              <option value="UTC">UTC</option>
+            </select>
+            {isSavingTimezone && (
+              <span className="saving-indicator"> Guardando...</span>
+            )}
+          </div>
+
+          <div className="content-section horas-especificas">
+            <div className="section-header">
+              <LuCalendarDays /> {/* Icon for specific days */}
+              <h4>Horas según el día</h4>
+            </div>
+            <p className="section-description">
+              Añada horas para días específicos
+            </p>
+            <button className="add-specific-hours-button">+ Horas</button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "festivos" && (
+        <div className="tab-content">
+          <p>Gestión de días festivos (contenido no implementado).</p>
+        </div>
+      )}
+      {activeTab === "configuracion" && (
+        <div className="tab-content">
+          <p>Configuración de disponibilidad (contenido no implementado).</p>
+        </div>
+      )}
     </div>
   );
 };

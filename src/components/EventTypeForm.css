@@ -68,6 +68,19 @@
   -moz-appearance: textfield; /* Firefox */
 }
 
+/* Styles for the duration select dropdown */
+.duration-select {
+  border: none;
+  padding: 10px 0px 10px 5px; /* Adjust padding */
+  font-size: 14px;
+  background-color: transparent; /* Match input background */
+  cursor: pointer;
+  /* Try to remove default browser appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 .duration-input span {
   font-size: 14px;
   color: #6b7280;
