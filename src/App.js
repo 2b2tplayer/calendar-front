@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Import router components
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import RegisterForm from "./components/RegisterForm";
@@ -22,8 +23,6 @@ function App() {
   const [userData, setUserData] = useState(null); // Estado para datos del usuario
   const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial
   const [error, setError] = useState(null); // Estado para errores
-  // Nuevo estado para gestionar la vista principal
-  const [currentView, setCurrentView] = useState("dashboard"); // 'dashboard', 'createEventType', 'availability', etc.
 
   // Efecto para verificar token y cargar datos del usuario al inicio
   useEffect(() => {
@@ -35,7 +34,6 @@ function App() {
           const user = await getCurrentUser();
           setUserData(user);
           setIsOnboardingComplete(true);
-          setCurrentView("dashboard"); // Asegurar que empieza en dashboard si está logueado
         } catch (err) {
           // Si el token es inválido o hay error, limpiar token y empezar onboarding
           console.error("Error fetching user:", err);
@@ -76,7 +74,6 @@ function App() {
       const user = await getCurrentUser();
       setUserData(user);
       setIsOnboardingComplete(true);
-      setCurrentView("dashboard"); // Establecer vista a dashboard al completar
     } catch (err) {
       console.error("Error completing onboarding:", err);
       setError("No se pudo completar el registro. Inténtalo de nuevo.");
@@ -84,31 +81,12 @@ function App() {
     }
   };
 
-  // --- Funciones para cambiar de vista ---
-  const showDashboard = () => {
-    setCurrentView("dashboard");
+  const handleEventTypeCreated = (/*newEvent*/) => {
+    // After creating an event, likely navigate back to the main dashboard or event list
+    // This might need useNavigate hook if called from deeply nested component,
+    // but for now, maybe just log or assume navigation happens elsewhere.
+    console.log("Event type created, routing should handle view change.");
   };
-
-  const showCreateEventTypeForm = () => {
-    console.log("Attempting to show Create Event Type form...");
-    setCurrentView("createEventType");
-  };
-
-  const showAvailabilitySettings = () => {
-    setCurrentView("availability");
-  };
-
-  // Function to show the booking page
-  const showBookingPage = () => {
-    setCurrentView("booking");
-  };
-
-  const handleEventTypeCreated = (newEvent) => {
-    console.log("Nuevo tipo de evento creado:", newEvent);
-    // Aquí podrías añadir lógica para refrescar la lista de eventos si es necesario
-    showDashboard(); // Volver al dashboard después de crear
-  };
-  // ------------------------------------
 
   const renderOnboardingFlow = () => {
     switch (currentOnboardingStep) {
@@ -180,60 +158,83 @@ function App() {
     return <div style={{ padding: "20px", color: "red" }}>Error: {error}</div>;
   }
 
-  // Contenido Principal a Renderizar
-  let mainContent = null;
-  if (!isOnboardingComplete) {
-    mainContent = renderOnboardingFlow();
-  } else {
-    switch (currentView) {
-      case "createEventType":
-        mainContent = (
-          <EventTypeForm
-            onSuccess={handleEventTypeCreated}
-            onCancel={showDashboard} // Usar showDashboard para cancelar
-          />
-        );
-        break;
-      case "availability":
-        mainContent = <AvailabilitySettings />;
-        break;
-      case "booking": // Add case for booking view
-        mainContent = <BookingPage />;
-        break;
-      case "dashboard":
-      default:
-        mainContent = (
-          <Dashboard
-            userData={userData}
-            showBookingPage={showBookingPage}
-            showCreateEventTypeForm={showCreateEventTypeForm}
-          />
-        );
-        break;
-    }
-  }
+  // Main layout component for logged-in users
+  const MainLayout = () => {
+    return (
+      <>
+        {/* Sidebar remains, but will use Link components internally */}
+        <Sidebar userData={userData} />
+        <div className={`main-content dashboard-view`}>
+          {/* Outlet renders the matched nested route component */}
+          <Outlet context={{ userData }} />{" "}
+          {/* Pass userData via context if needed by nested routes */}
+        </div>
+      </>
+    );
+  };
 
   return (
-    <div className="app">
-      {/* Mostrar Sidebar solo si el onboarding está completo */}
-      {isOnboardingComplete && (
-        <Sidebar
-          userData={userData}
-          currentView={currentView} // Pasar vista actual para active state
-          showDashboard={showDashboard}
-          showAvailabilitySettings={showAvailabilitySettings}
-          showCreateEventTypeForm={showCreateEventTypeForm}
-          // Aquí podríamos pasar más funciones para otros links
-        />
-      )}
-      <div
-        className={`main-content ${
-          isOnboardingComplete ? "dashboard-view" : "onboarding-view"
-        }`}
-      >
-        {mainContent}
+    <BrowserRouter>
+      <div className="app">
+        {" "}
+        {/* Changed class to app */}
+        <Routes>
+          {/* Public booking page route */}
+          <Route path="/book/:username/:slug" element={<BookingPage />} />
+
+          {/* Main route: renders onboarding or the MainLayout */}
+          <Route
+            path="/*"
+            element={
+              !isOnboardingComplete ? (
+                // Onboarding Flow
+                <div className="main-content onboarding-view">
+                  {error && !isLoading && (
+                    <div style={{ padding: "20px", color: "red" }}>
+                      Error: {error}
+                    </div>
+                  )}
+                  {!error && renderOnboardingFlow()}
+                </div>
+              ) : (
+                // Logged-in Flow - Render MainLayout which contains nested routes
+                <Routes>
+                  {" "}
+                  {/* Nested Routes for MainLayout */}
+                  <Route path="/*" element={<MainLayout />}>
+                    {/* Default route (e.g., /) shows Dashboard */}
+                    <Route index element={<Dashboard />} />
+                    {/* Route for creating/viewing event types */}
+                    <Route
+                      path="eventos"
+                      element={
+                        <EventTypeForm
+                          onSuccess={handleEventTypeCreated}
+                          onCancel={() => {
+                            /* Use navigate(-1) or similar */
+                          }}
+                        />
+                      }
+                    />
+                    {/* Route for availability settings */}
+                    <Route
+                      path="disponibilidad"
+                      element={<AvailabilitySettings />}
+                    />
+                    {/* Add other nested routes here if needed */}
+                    {/* Optional: Catch-all for unmatched routes within main layout? */}
+                    <Route
+                      path="*"
+                      element={<div>404 - Page Not Found inside App</div>}
+                    />
+                  </Route>
+                </Routes>
+              )
+            }
+          />
+        </Routes>
       </div>
-    </div>
+    </BrowserRouter>
   );
 }
 

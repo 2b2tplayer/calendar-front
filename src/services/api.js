@@ -216,17 +216,12 @@ export const updateAvailability = async (availabilityData) => {
 
 // Get available time slots for a specific event type and date
 export const getAvailabilitySlots = async (params) => {
-  // params = { eventTypeId: string, date: string (YYYY-MM-DD), timezone: string }
+  // params = { eventTypeId: string, date=...&timezone=...
   try {
-    // Let Axios handle parameter encoding
-    console.log(`API Call: GET /availability/slots with params:`, params);
-    const response = await apiClient.get(`/availability/slots`, { params }); // Pass params object directly
-    // The API doc doesn't explicitly show the structure for THIS endpoint,
-    // but assuming it returns an array of time strings directly in the data field.
-    // Adjust if the backend returns slots within a nested object.
-    return handleResponse(response); // Expects array like ["09:00", "09:30"]
+    const queryString = new URLSearchParams(params).toString();
+    const response = await apiClient.get(`/availability/slots?${queryString}`);
+    return handleResponse(response); // Devuelve array de slots
   } catch (error) {
-    // Handle specific errors? e.g., 404 if event type not found?
     handleError(error);
   }
 };
@@ -355,11 +350,18 @@ export const rescheduleBooking = async (id, rescheduleData) => {
   }
 };
 
-// Cancel a booking (using DELETE)
-export const cancelBooking = async (id) => {
-  // The documentation now specifies DELETE /bookings/:id
-  // The old PUT endpoint might be deprecated or removed.
-  // Reason is not typically sent in DELETE body, handle on backend if needed.
+export const cancelBooking = async (id, cancelData) => {
+  // cancelData es { reason, token? }
+  try {
+    const response = await apiClient.put(`/bookings/${id}/cancel`, cancelData);
+    return handleResponse(response);
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// New DELETE endpoint based on latest documentation
+export const deleteBooking = async (id) => {
   try {
     const response = await apiClient.delete(`/bookings/${id}`);
     return handleResponse(response); // Should return success or throw error

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -24,9 +25,14 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 // Key for localStorage
 const LAYOUT_STORAGE_KEY = "dashboardLayouts";
 
-const Dashboard = ({ userData, showBookingPage, showCreateEventTypeForm }) => {
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const { userData } = useOutletContext();
+
   // Revert greeting name
   const userName = userData?.name || "Santiago";
+  // Get username for URL (assuming it exists, otherwise fallback)
+  const userUrlName = userData?.username || userName.toLowerCase();
 
   const [eventTypes, setEventTypes] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -170,6 +176,18 @@ const Dashboard = ({ userData, showBookingPage, showCreateEventTypeForm }) => {
     { name: "Canceladas", value: 10, fill: "#ffc658" },
   ];
 
+  // Function to handle navigation to the booking page
+  const handleViewBookingPage = () => {
+    // Use the first event type's slug as a default link
+    if (eventTypes && eventTypes.length > 0 && eventTypes[0].slug) {
+      const firstSlug = eventTypes[0].slug;
+      navigate(`/book/${userUrlName}/${firstSlug}`);
+    } else {
+      // Handle case where user has no event types yet
+      alert("Crea un tipo de evento primero para ver tu página de reservas.");
+    }
+  };
+
   // --- Render ---
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -182,7 +200,10 @@ const Dashboard = ({ userData, showBookingPage, showCreateEventTypeForm }) => {
           <h1>Bienvenido a Calendar</h1>
         </div>
         <div className="header-actions">
-          <button onClick={showBookingPage} className="view-booking-button">
+          <button
+            onClick={handleViewBookingPage}
+            className="view-booking-button"
+          >
             Ver página de reservas <LuExternalLink />
           </button>
           {userData?.profilePicture ? (
@@ -209,9 +230,6 @@ const Dashboard = ({ userData, showBookingPage, showCreateEventTypeForm }) => {
         isDraggable
         isResizable
         onLayoutChange={onLayoutChange} // Handle layout updates
-        draggableCancel="button"
-        // compactType="vertical" // or "horizontal"
-        // useCSSTransforms={true} // Enable smoother animations
       >
         {/* Wrap each card in a div with a matching key */}
         <div key="calendar" className="dashboard-card calendar-card">
@@ -285,8 +303,11 @@ const Dashboard = ({ userData, showBookingPage, showCreateEventTypeForm }) => {
           className="dashboard-card event-type-list-card"
         >
           <EventTypeList
+            eventTypes={eventTypes}
+            onEdit={(id) => console.log("Edit event type:", id)}
+            onShare={(slug) => navigate(`/book/${userUrlName}/${slug}`)}
+            onCreate={() => navigate("/eventos")}
             userData={userData}
-            onCreateClick={showCreateEventTypeForm}
           />
         </div>
 

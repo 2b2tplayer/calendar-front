@@ -12,112 +12,171 @@ body {
 }
 
 .sidebar {
-  width: 250px;
+  width: 260px;
   height: 100vh;
-  background-color: #ffffff; /* White background */
-  padding: 30px 20px;
+  background: #fff;
+  border-radius: 20px 0 0 20px;
+  box-shadow: 2px 0 16px 0 rgba(0, 0, 0, 0.07);
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; Removed to allow grouping */
-  border-right: 1px solid #e0e0e0; /* Add back subtle border */
-  color: #333; /* Default dark text color */
+  justify-content: space-between;
+  padding: 0;
+}
+
+.koafy-logo-section {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  margin: 20px 0 24px 0;
+  padding-left: 24px;
+}
+
+.koafy-logo-svg svg {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.koafy-logo-text {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #201e1e;
+  margin-left: 10px;
+  letter-spacing: -1px;
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
-  margin-bottom: 40px; /* Adjust spacing */
-  padding-left: 10px;
+  height: 60px;
 }
 
-.sidebar-nav {
-  /* Allow the two nav sections to be distinct */
+.sidebar-top {
+  padding-bottom: 0;
 }
 
-.sidebar-nav ul {
+.sidebar-nav.main-nav ul {
   list-style: none;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
 }
 
-.sidebar-nav li {
+.sidebar-nav.main-nav li {
+  margin-bottom: 8px;
+}
+
+.sidebar-nav.main-nav a {
   display: flex;
   align-items: center;
-  padding: 12px 15px;
-  margin-bottom: 10px; /* Adjust spacing */
-  border-radius: 8px;
-  cursor: pointer;
-  color: #555; /* Default link color */
-  font-size: 15px;
-  font-weight: 400;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.sidebar-nav li svg {
-  margin-right: 15px;
-  font-size: 20px;
-  color: #777; /* Default icon color */
-  transition: color 0.2s ease;
-}
-
-.sidebar-nav li:hover {
-  background-color: #f0f0f5; /* Light hover background */
-  color: #333; /* Darker text on hover */
-}
-
-.sidebar-nav li:hover svg {
-  color: #333; /* Darker icon on hover */
-}
-
-.sidebar-nav li.active {
-  background-color: #e8e7fd; /* Light purple background for active */
-  color: #5e7ef7; /* Primary color for active text */
+  gap: 12px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #201e1e;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
+  transition: background 0.2s, color 0.2s;
 }
 
-.sidebar-nav li.active svg {
-  color: #5e7ef7; /* Primary color for active icon */
+.sidebar-nav.main-nav a.active {
+  background: #edeaff;
+  color: #6a67f3;
+}
+
+.sidebar-nav.main-nav a.active svg {
+  color: #6a67f3;
+}
+
+.sidebar-nav.main-nav a svg {
+  font-size: 1.3em;
+  color: #201e1e;
+  transition: color 0.2s;
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid #ededed;
+  margin: 32px 24px 16px 24px;
 }
 
 .sidebar-bottom {
-  margin-top: auto; /* Push this section to the bottom */
-  padding-top: 20px; /* Add some space above the bottom section */
-  border-top: 1px solid #e0e0e0; /* Separator line */
+  margin-bottom: 16px;
 }
 
-.user-profile {
+.sidebar-nav.secondary-nav ul {
+  list-style: none;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
+.sidebar-nav.secondary-nav li {
   display: flex;
   align-items: center;
-  margin-top: 20px; /* Space above profile within bottom section */
-  /* Removed top border as it's now on sidebar-bottom */
+  gap: 12px;
+  color: #888;
+  font-size: 1rem;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 12px;
+  padding: 6px 24px;
+}
+
+.user-profile.koafy-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px 12px 24px;
+  margin-top: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-profile.koafy-profile:hover {
+  background: #f5f5fa;
 }
 
 .user-avatar {
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  margin-right: 12px;
   object-fit: cover;
+  background: #edeaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+}
+
+.placeholder-avatar {
+  background: #edeaff;
+  color: #6a67f3;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  line-height: 1.1;
 }
 
 .user-name {
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 500;
-  color: #333; /* Dark name */
+  color: #201e1e;
+  font-family: "Poppins", sans-serif;
 }
 
 .user-email {
-  font-size: 12px;
-  color: #888; /* Grey email color */
+  font-size: 0.85rem;
+  color: #888;
+  font-family: "Poppins", sans-serif;
 }
 
-.user-menu-icon {
+.user-profile-chevron {
+  margin-left: auto;
   color: #888;
-  cursor: pointer;
+  font-size: 1.2em;
 }
 
 /* Remove responsive styles for now if not needed */
