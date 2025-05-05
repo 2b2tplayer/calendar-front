@@ -218,9 +218,9 @@ export const updateAvailability = async (availabilityData) => {
 export const getAvailabilitySlots = async (params) => {
   // params = { eventTypeId: string, date: string (YYYY-MM-DD), timezone: string }
   try {
-    const queryString = new URLSearchParams(params).toString();
-    console.log(`API Call: GET /availability/slots?${queryString}`); // Log the actual call
-    const response = await apiClient.get(`/availability/slots?${queryString}`);
+    // Let Axios handle parameter encoding
+    console.log(`API Call: GET /availability/slots with params:`, params);
+    const response = await apiClient.get(`/availability/slots`, { params }); // Pass params object directly
     // The API doc doesn't explicitly show the structure for THIS endpoint,
     // but assuming it returns an array of time strings directly in the data field.
     // Adjust if the backend returns slots within a nested object.
