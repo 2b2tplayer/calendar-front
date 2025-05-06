@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Import router components
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  useNavigate,
+} from "react-router-dom"; // Import router components and useNavigate
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import RegisterForm from "./components/RegisterForm";
@@ -25,6 +31,7 @@ function App() {
   const [error, setError] = useState(null); // Estado para errores
   const [showSkipButton, setShowSkipButton] = useState(false); // State for skip button visibility
   const [isDevSkipActive, setIsDevSkipActive] = useState(false); // State to track dev skip
+  const navigate = useNavigate(); // Get the navigate function
 
   // Effect to handle Shift+H shortcut
   useEffect(() => {
@@ -124,10 +131,9 @@ function App() {
   };
 
   const handleEventTypeCreated = (/*newEvent*/) => {
-    // After creating an event, likely navigate back to the main dashboard or event list
-    // This might need useNavigate hook if called from deeply nested component,
-    // but for now, maybe just log or assume navigation happens elsewhere.
-    console.log("Event type created, routing should handle view change.");
+    // After creating an event, navigate back to the main dashboard
+    console.log("Event type created, navigating to dashboard.");
+    navigate("/"); // Navigate to the root/dashboard route
   };
 
   const renderOnboardingFlow = () => {
