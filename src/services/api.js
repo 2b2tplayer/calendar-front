@@ -230,8 +230,8 @@ export const getAvailabilitySlots = async (params) => {
 export const getEventTypes = async () => {
   try {
     const response = await apiClient.get("/event-types");
-    // La respuesta aquí tiene 'count' y 'data', devolvemos solo 'data'
-    return response.data.data;
+    // Usar handleResponse para extraer correctamente la data
+    return handleResponse(response);
   } catch (error) {
     handleError(error);
   }
