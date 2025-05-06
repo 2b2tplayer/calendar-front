@@ -9,10 +9,11 @@ import {
   LuFileText,
   LuPhone,
   LuSettings,
-  LuUser,
   LuChevronDown,
 } from "react-icons/lu";
 import { logout } from "../services/api"; // Import logout function
+// Import the SVG path directly
+import DefaultAvatar from "../assets/default-avatar.svg";
 
 // Define a helper function or component for list items
 const SidebarItem = ({ to, icon, label, currentPath }) => (
@@ -83,6 +84,14 @@ const Sidebar = ({ userData }) => {
     </div>
   );
 
+  // Add console log for debugging
+  console.log(
+    "Sidebar rendering. UserData:",
+    userData,
+    "DefaultAvatar import:",
+    DefaultAvatar
+  );
+
   return (
     <div className="sidebar">
       {/* Top Section: Logo and Main Nav */}
@@ -138,16 +147,21 @@ const Sidebar = ({ userData }) => {
           onClick={handleLogout}
           style={{ cursor: "pointer" }}
         >
-          {userData?.profilePicture ? (
+          {/* Check if profilePicture exists AND is not the placeholder string */}
+          {userData?.profilePicture &&
+          userData.profilePicture !== "default.jpg" ? (
             <img
               src={userData.profilePicture}
               alt="Avatar"
               className="user-avatar"
             />
           ) : (
-            <div className="user-avatar placeholder-avatar">
-              <LuUser size={20} />
-            </div>
+            // Use img tag with imported SVG path
+            <img
+              src={DefaultAvatar}
+              alt="Avatar por defecto"
+              className="user-avatar"
+            />
           )}
           <div className="user-info">
             <span className="user-name">{userData?.name || "Usuario"}</span>

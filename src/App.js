@@ -23,6 +23,24 @@ function App() {
   const [userData, setUserData] = useState(null); // Estado para datos del usuario
   const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial
   const [error, setError] = useState(null); // Estado para errores
+  const [showSkipButton, setShowSkipButton] = useState(false); // State for skip button visibility
+  const [isDevSkipActive, setIsDevSkipActive] = useState(false); // State to track dev skip
+
+  // Effect to handle Shift+H shortcut
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.shiftKey && event.key === "H") {
+        setShowSkipButton(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []); // Empty dependency array means this effect runs once on mount
 
   // Efecto para verificar token y cargar datos del usuario al inicio
   useEffect(() => {
@@ -35,11 +53,21 @@ function App() {
           setUserData(user);
           setIsOnboardingComplete(true);
         } catch (err) {
-          // Si el token es inválido o hay error, limpiar token y empezar onboarding
-          console.error("Error fetching user:", err);
-          setToken(null); // Limpiar token inválido
-          setIsOnboardingComplete(false);
-          setError("Error al verificar tu sesión. Por favor, inicia de nuevo.");
+          // If dev skip is active, don't reset state due to invalid dev token
+          if (!isDevSkipActive) {
+            // Si el token es inválido o hay error, limpiar token y empezar onboarding
+            console.error("Error fetching user:", err);
+            setToken(null); // Limpiar token inválido
+            setIsOnboardingComplete(false);
+            setError(
+              "Error al verificar tu sesión. Por favor, inicia de nuevo."
+            );
+          } else {
+            console.warn(
+              "Dev skip active: Ignoring backend validation error for dev-token."
+            );
+            // Keep isOnboardingComplete and userData set by skipOnboarding
+          }
         }
       } else {
         // No hay token, iniciar onboarding
@@ -50,7 +78,21 @@ function App() {
     };
 
     checkAuthAndLoadUser();
-  }, []); // Se ejecuta solo una vez al montar el componente
+  }, [isDevSkipActive]); // Se ejecuta solo una vez al montar el componente
+
+  const skipOnboarding = () => {
+    // Simulate onboarding completion
+    // In a real app, you might need to fetch default/dummy user data here
+    // or ensure the dashboard can handle a null/incomplete user state.
+    setToken("dev-token"); // Set a dummy token for development
+    setIsOnboardingComplete(true);
+    setUserData({
+      name: "Dev User",
+      email: "dev@example.com",
+      id: "dev_user_id",
+    }); // Set default user data
+    setIsDevSkipActive(true); // Mark dev skip as active
+  };
 
   const nextStep = () => {
     if (currentOnboardingStep < TOTAL_ONBOARDING_STEPS) {
@@ -168,6 +210,25 @@ function App() {
           {/* Outlet renders the matched nested route component */}
           <Outlet context={{ userData }} />{" "}
           {/* Pass userData via context if needed by nested routes */}
+          {showSkipButton && !isOnboardingComplete && (
+            <button
+              onClick={skipOnboarding}
+              style={{
+                position: "fixed",
+                bottom: "20px",
+                right: "20px",
+                zIndex: 1000, // Ensure it's above other content
+                padding: "10px 15px",
+                backgroundColor: "red",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Skip to Dashboard (Dev)
+            </button>
+          )}
         </div>
       </>
     );
@@ -195,6 +256,25 @@ function App() {
                     </div>
                   )}
                   {!error && renderOnboardingFlow()}
+                  {showSkipButton && !isOnboardingComplete && (
+                    <button
+                      onClick={skipOnboarding}
+                      style={{
+                        position: "fixed",
+                        bottom: "20px",
+                        right: "20px",
+                        zIndex: 1000, // Ensure it's above other content
+                        padding: "10px 15px",
+                        backgroundColor: "red",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Skip to Dashboard (Dev)
+                    </button>
+                  )}
                 </div>
               ) : (
                 // Logged-in Flow - Render MainLayout which contains nested routes

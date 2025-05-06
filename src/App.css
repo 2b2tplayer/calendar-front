@@ -12,12 +12,14 @@ body {
 
 .app {
   display: flex;
-  min-height: 100vh; /* Asegura que ocupe toda la altura */
+  height: 100vh; /* Changed from min-height */
 }
 
 .main-content {
   flex-grow: 1;
   transition: background-color 0.3s ease; /* Transición suave del fondo */
+  height: 100vh; /* Added height */
+  overflow-y: auto; /* Added overflow */
 }
 
 /* Fondo para la vista de Onboarding (pasos 1-5 y pantalla final) */
@@ -41,9 +43,10 @@ body {
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
-  .app {
-    flex-direction: column;
-  }
+  /* Removed flex-direction: column; to keep sidebar and content side-by-side */
+  /* .app { */
+  /*   flex-direction: column; */
+  /* } */
 }
 
 /* Eliminamos los estilos por defecto de create-react-app que ya no necesitamos */

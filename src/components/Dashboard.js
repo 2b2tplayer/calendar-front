@@ -13,12 +13,13 @@ import {
   LuCalendarDays,
   LuChevronLeft,
   LuChevronRight,
-  LuExternalLink,
-  LuUser,
-} from "react-icons/lu";
+  LuExternalLink, // Removed unused import
+} from /* LuUser, */ "react-icons/lu";
 import "./Dashboard.css";
 import { getEventTypes, getBookings } from "../services/api";
 import EventTypeList from "./EventTypeList";
+// Import the SVG path directly
+import DefaultAvatar from "../assets/default-avatar.svg";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -192,6 +193,14 @@ const Dashboard = () => {
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error: {error}</div>;
 
+  // Add console log for debugging
+  console.log(
+    "Dashboard rendering. UserData:",
+    userData,
+    "DefaultAvatar import:",
+    DefaultAvatar
+  );
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -206,16 +215,21 @@ const Dashboard = () => {
           >
             Ver página de reservas <LuExternalLink />
           </button>
-          {userData?.profilePicture ? (
+          {/* Check if profilePicture exists AND is not the placeholder string */}
+          {userData?.profilePicture &&
+          userData.profilePicture !== "default.jpg" ? (
             <img
               src={userData.profilePicture}
               alt="User Avatar"
               className="user-avatar-dashboard"
             />
           ) : (
-            <div className="user-avatar-dashboard placeholder-avatar">
-              <LuUser />
-            </div>
+            // Use img tag with imported SVG path
+            <img
+              src={DefaultAvatar}
+              alt="Avatar por defecto"
+              className="user-avatar-dashboard"
+            />
           )}
         </div>
       </header>
