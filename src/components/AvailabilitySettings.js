@@ -173,20 +173,20 @@ const AvailabilitySettings = () => {
         >
           Horario
         </button>
-        <button
+        {/* <button
           className={`tab-button ${activeTab === "festivos" ? "active" : ""}`}
           onClick={() => setActiveTab("festivos")}
         >
           Festivos
-        </button>
-        <button
+        </button> */}
+        {/* <button
           className={`tab-button ${
             activeTab === "configuracion" ? "active" : ""
           }`}
           onClick={() => setActiveTab("configuracion")}
         >
           Configuración
-        </button>
+        </button> */}
       </div>
 
       {activeTab === "horario" && (
@@ -236,16 +236,16 @@ const AvailabilitySettings = () => {
         </div>
       )}
 
-      {activeTab === "festivos" && (
+      {/* {activeTab === "festivos" && (
         <div className="tab-content">
           <p>Gestión de días festivos (contenido no implementado).</p>
         </div>
-      )}
-      {activeTab === "configuracion" && (
+      )} */}
+      {/* {activeTab === "configuracion" && (
         <div className="tab-content">
           <p>Configuración de disponibilidad (contenido no implementado).</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
