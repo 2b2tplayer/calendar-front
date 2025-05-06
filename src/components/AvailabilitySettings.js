@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAvailability, updateUserProfile } from "../services/api";
-import {
-  LuCopy,
-  LuPlus,
-  LuX,
-  LuRefreshCw,
-  LuCalendarDays,
-} from "react-icons/lu";
+import { LuCopy, LuPlus, LuX, LuRefreshCw } from "react-icons/lu";
 import "./AvailabilitySettings.css"; // Styles will need significant updates
 
 // Mapeo de nombres de día a letras
@@ -238,17 +232,6 @@ const AvailabilitySettings = () => {
             {isSavingTimezone && (
               <span className="saving-indicator"> Guardando...</span>
             )}
-          </div>
-
-          <div className="content-section horas-especificas">
-            <div className="section-header">
-              <LuCalendarDays /> {/* Icon for specific days */}
-              <h4>Horas según el día</h4>
-            </div>
-            <p className="section-description">
-              Añada horas para días específicos
-            </p>
-            <button className="add-specific-hours-button">+ Horas</button>
           </div>
         </div>
       )}

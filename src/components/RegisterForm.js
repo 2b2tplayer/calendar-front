@@ -145,7 +145,7 @@ const RegisterForm = ({ nextStep, currentStep, totalSteps }) => {
             disabled={isSubmitting}
             style={{ width: "100%" }}
           >
-            {isSubmitting ? "Registrando..." : "Continuar >"}
+            {isSubmitting ? "Registrando..." : "Continuar"}
           </button>
         </form>
       </div>

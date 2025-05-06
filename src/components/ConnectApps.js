@@ -68,7 +68,7 @@ const ConnectApps = ({ nextStep, prevStep, currentStep, totalSteps }) => {
         </div>
 
         <button onClick={handleContinue} className="submit-button">
-          Continuar &gt;
+          Continuar
         </button>
 
         <div className="optional-links">

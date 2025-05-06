@@ -137,7 +137,7 @@ const ProfileSetup = ({
             disabled={isSubmitting}
             style={{ width: "100%" }} /* Asegurar ancho completo */
           >
-            {isSubmitting ? "Guardando..." : "Terminar >"}
+            {isSubmitting ? "Guardando..." : "Terminar"}
           </button>
         </form>
         <div className="optional-links">

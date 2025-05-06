@@ -352,7 +352,7 @@ const Dashboard = () => {
             </ResponsiveContainer>
             <div className="chart-center-text">
               <span className="value">{meetingsCount}</span>
-              <span className="label">Reuniones del mes</span>
+              <span className="label">Reuniones</span>
             </div>
           </div>
         </div>

@@ -23,15 +23,16 @@ import { getCurrentUser, getToken, setToken } from "./services/api"; // Importar
 
 const TOTAL_ONBOARDING_STEPS = 5; // Pasos reales antes de la pantalla final
 
-function App() {
+// Create a new component to contain the app logic
+const AppContent = () => {
   const [currentOnboardingStep, setCurrentOnboardingStep] = useState(1);
-  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false); // Nuevo estado
-  const [userData, setUserData] = useState(null); // Estado para datos del usuario
-  const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial
-  const [error, setError] = useState(null); // Estado para errores
-  const [showSkipButton, setShowSkipButton] = useState(false); // State for skip button visibility
-  const [isDevSkipActive, setIsDevSkipActive] = useState(false); // State to track dev skip
-  const navigate = useNavigate(); // Get the navigate function
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showSkipButton, setShowSkipButton] = useState(false);
+  const [isDevSkipActive, setIsDevSkipActive] = useState(false);
+  const navigate = useNavigate(); // useNavigate is now called within a child of BrowserRouter
 
   // Effect to handle Shift+H shortcut
   useEffect(() => {
@@ -97,6 +98,7 @@ function App() {
       name: "Dev User",
       email: "dev@example.com",
       id: "dev_user_id",
+      profilePicture: "default.jpg", // ensure dev user also has this for consistent logic
     }); // Set default user data
     setIsDevSkipActive(true); // Mark dev skip as active
   };
@@ -201,7 +203,7 @@ function App() {
     return <div>Cargando...</div>; // O un componente Spinner
   }
 
-  if (error && !isOnboardingComplete) {
+  if (error && !isOnboardingComplete && !isDevSkipActive) {
     // Mostrar error solo si falló la carga inicial y no estamos en onboarding
     return <div style={{ padding: "20px", color: "red" }}>Error: {error}</div>;
   }
@@ -241,85 +243,90 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <div className="app">
-        {" "}
-        {/* Changed class to app */}
-        <Routes>
-          {/* Public booking page route */}
-          <Route path="/book/:username/:slug" element={<BookingPage />} />
+    <div className="app">
+      <Routes>
+        {/* Public booking page route */}
+        <Route path="/book/:username/:slug" element={<BookingPage />} />
 
-          {/* Main route: renders onboarding or the MainLayout */}
-          <Route
-            path="/*"
-            element={
-              !isOnboardingComplete ? (
-                // Onboarding Flow
-                <div className="main-content onboarding-view">
-                  {error && !isLoading && (
-                    <div style={{ padding: "20px", color: "red" }}>
-                      Error: {error}
-                    </div>
-                  )}
-                  {!error && renderOnboardingFlow()}
-                  {showSkipButton && !isOnboardingComplete && (
-                    <button
-                      onClick={skipOnboarding}
-                      style={{
-                        position: "fixed",
-                        bottom: "20px",
-                        right: "20px",
-                        zIndex: 1000, // Ensure it's above other content
-                        padding: "10px 15px",
-                        backgroundColor: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Skip to Dashboard (Dev)
-                    </button>
-                  )}
-                </div>
-              ) : (
-                // Logged-in Flow - Render MainLayout which contains nested routes
-                <Routes>
-                  {" "}
-                  {/* Nested Routes for MainLayout */}
-                  <Route path="/*" element={<MainLayout />}>
-                    {/* Default route (e.g., /) shows Dashboard */}
-                    <Route index element={<Dashboard />} />
-                    {/* Route for creating/viewing event types */}
-                    <Route
-                      path="eventos"
-                      element={
-                        <EventTypeForm
-                          onSuccess={handleEventTypeCreated}
-                          onCancel={() => {
-                            /* Use navigate(-1) or similar */
-                          }}
-                        />
-                      }
-                    />
-                    {/* Route for availability settings */}
-                    <Route
-                      path="disponibilidad"
-                      element={<AvailabilitySettings />}
-                    />
-                    {/* Add other nested routes here if needed */}
-                    {/* Optional: Catch-all for unmatched routes within main layout? */}
-                    <Route
-                      path="*"
-                      element={<div>404 - Page Not Found inside App</div>}
-                    />
-                  </Route>
-                </Routes>
-              )
-            }
-          />
-        </Routes>
-      </div>
+        {/* Main route: renders onboarding or the MainLayout */}
+        <Route
+          path="/*"
+          element={
+            !isOnboardingComplete ? (
+              // Onboarding Flow
+              <div className="main-content onboarding-view">
+                {error && !isLoading && !isDevSkipActive && (
+                  <div style={{ padding: "20px", color: "red" }}>
+                    Error: {error}
+                  </div>
+                )}
+                {!error && renderOnboardingFlow()}
+                {showSkipButton && !isOnboardingComplete && (
+                  <button
+                    onClick={skipOnboarding}
+                    style={{
+                      position: "fixed",
+                      bottom: "20px",
+                      right: "20px",
+                      zIndex: 1000, // Ensure it's above other content
+                      padding: "10px 15px",
+                      backgroundColor: "red",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Skip to Dashboard (Dev)
+                  </button>
+                )}
+              </div>
+            ) : (
+              // Logged-in Flow - Render MainLayout which contains nested routes
+              <Routes>
+                {" "}
+                {/* Nested Routes for MainLayout */}
+                <Route path="/*" element={<MainLayout />}>
+                  {/* Default route (e.g., /) shows Dashboard */}
+                  <Route index element={<Dashboard />} />
+                  {/* Route for creating/viewing event types */}
+                  <Route
+                    path="eventos"
+                    element={
+                      <EventTypeForm
+                        onSuccess={handleEventTypeCreated}
+                        onCancel={() => {
+                          /* Use navigate(-1) or similar */
+                        }}
+                      />
+                    }
+                  />
+                  {/* Route for availability settings */}
+                  <Route
+                    path="disponibilidad"
+                    element={<AvailabilitySettings />}
+                  />
+                  {/* Add other nested routes here if needed */}
+                  {/* Optional: Catch-all for unmatched routes within main layout? */}
+                  <Route
+                    path="*"
+                    element={<div>404 - Page Not Found inside App</div>}
+                  />
+                </Route>
+              </Routes>
+            )
+          }
+        />
+      </Routes>
+    </div>
+  );
+};
+
+// The App component now only sets up the BrowserRouter
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

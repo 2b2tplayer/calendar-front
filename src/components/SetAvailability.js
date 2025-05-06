@@ -198,7 +198,7 @@ const SetAvailability = ({ nextStep, prevStep, currentStep, totalSteps }) => {
           className="submit-button main-continue-button"
           disabled={isSubmitting || isLoading}
         >
-          {isSubmitting ? "Guardando..." : "Continuar >"}
+          {isSubmitting ? "Guardando..." : "Continuar"}
         </button>
 
         <button

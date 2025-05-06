@@ -6,9 +6,9 @@ import {
   LuExternalLink,
   LuLock,
   LuGlobe,
-  LuUser,
 } from "react-icons/lu"; // Import icons
 import "./EventTypeList.css"; // We'll create this CSS file
+import DefaultAvatar from "../assets/default-avatar.svg"; // Import the SVG
 
 const EventTypeList = ({ onCreateClick, userData }) => {
   const [eventTypes, setEventTypes] = useState([]);
@@ -103,17 +103,20 @@ const EventTypeList = ({ onCreateClick, userData }) => {
     <div className="event-type-list-container">
       <div className="event-type-list-header">
         <div className="user-info-header">
-          {/* Conditional rendering for avatar */}
-          {userData?.profilePicture ? (
+          {/* Conditional rendering for avatar - corrected */}
+          {userData?.profilePicture &&
+          userData.profilePicture !== "default.jpg" ? (
             <img
               src={userData.profilePicture}
               alt={userName}
               className="user-avatar-small"
             />
           ) : (
-            <div className="user-avatar-small placeholder-avatar">
-              <LuUser /> {/* Render icon */}
-            </div>
+            <img
+              src={DefaultAvatar}
+              alt="Avatar por defecto"
+              className="user-avatar-small"
+            />
           )}
           <div>
             <span className="user-name-header">{userName}</span>
